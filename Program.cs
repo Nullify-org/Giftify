@@ -1,3 +1,8 @@
+using Giftify.Data;
+using Giftify.Models;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
+
 namespace Giftify
 {
     public class Program
@@ -5,7 +10,18 @@ namespace Giftify
         public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
-            
+
+            // Register Identity Service 
+            builder.Services.AddDbContext<ApplicationDbContext>(options =>
+            {
+                options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
+            });
+
+            builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
+            {
+
+            }).AddEntityFrameworkStores<ApplicationDbContext>();
+
             // Add services to the container.
             builder.Services.AddControllersWithViews();
 
@@ -18,6 +34,7 @@ namespace Giftify
             }
             app.UseRouting();
 
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.MapStaticAssets();

@@ -14,4 +14,11 @@ public class Product
     public ICollection<ProductImage> Images { get; set; } = new List<ProductImage>();
 
     public ICollection<OccasionProduct> OccasionProducts { get; set; } = new List<OccasionProduct>();
+
+
+    public ICollection<CartItem> CartItems { get; set; }
+        = new List<CartItem>();
+
+    public ICollection<OrderItem> OrderItems { get; set; }
+        = new List<OrderItem>();
 }

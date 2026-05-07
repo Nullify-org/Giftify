@@ -7,8 +7,11 @@ public class Order
     public string ShippingAddress { get; set; }
     public DateTime OrderDate { get; set; } = DateTime.Now;
     public string Status { get; set; }
-    public int TotalAmount { get; set; }
+    public decimal TotalAmount { get; set; }
     public string GiftMessage { get; set; }
+    // as one user  has one to many relation with orders
     public ApplicationUser User { get; set; }
-    public ICollection<OrderItem> orderItems { get; set; } = new List<OrderItem>();
+    //as it has one to many relation with order items
+    public ICollection<OrderItem> OrderItems { get; set; } = new List<OrderItem>();
+    public Payment? Payment { get; set; }
 }

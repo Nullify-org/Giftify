@@ -8,4 +8,6 @@ public class Occasion
     public bool IsActive { get; set; }
 
     public ICollection<OccasionProduct> OccasionProducts { get; set; } = new List<OccasionProduct>();
+    public ICollection<OccasionCategory> OccasionCategories { get; set; }
+            = new List<OccasionCategory>();
 }

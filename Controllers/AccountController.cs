@@ -1,5 +1,5 @@
 ﻿using Giftify.Models;
-using Giftify.ViewModels;
+using Giftify.ViewModels.Account;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 

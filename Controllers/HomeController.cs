@@ -1,9 +1,11 @@
 using System.Diagnostics;
 using Giftify.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Giftify.Controllers
 {
+    //[Authorize]
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;

@@ -30,6 +30,7 @@ namespace Giftify.Controllers
         }
         
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Register(RegisterVM userFromReq)
         {
             if (!ModelState.IsValid)

@@ -3,6 +3,8 @@ using System.ComponentModel.DataAnnotations;
 
     public class RegisterVM
     {
+
+
      [Required]
      [StringLength(100)]
     public string FullName { get; set; }

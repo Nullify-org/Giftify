@@ -16,7 +16,7 @@ public class BaseRepository<T> : IBaseRepository<T> where T : class
 
     private IQueryable<T> ApplyIncludes(IQueryable<T> query, Expression<Func<T, object>>[] includes)
     {
-        if (includes != null)
+        if (includes != null && includes.Any())
         {
             foreach (var include in includes)
                 query = query.Include(include);
@@ -25,7 +25,7 @@ public class BaseRepository<T> : IBaseRepository<T> where T : class
     }
 
     public async Task<T?> GetByIdAsync(int id) => await _context.Set<T>().FindAsync(id);
-    public async Task<T?> FindAsync(Expression<Func<T, bool>> criteria, Expression<Func<T, object>>[]? includes = null)
+    public async Task<T?> FindAsync(Expression<Func<T, bool>> criteria, params Expression<Func<T, object>>[]? includes)
     {
         IQueryable<T> query = _context.Set<T>().Where(criteria).AsNoTracking();
 
@@ -33,7 +33,20 @@ public class BaseRepository<T> : IBaseRepository<T> where T : class
 
         return await query.FirstOrDefaultAsync();
     }
-    public async Task<IEnumerable<T>> GetAllAsync(Expression<Func<T, object>>[]? includes = null)
+
+    public async Task<T?> FindAsync(Expression<Func<T, bool>> criteria, string[] includes)
+    {
+        IQueryable<T> query = _context.Set<T>().Where(criteria).AsNoTracking();
+
+        if (includes != null)
+        {
+            foreach (var include in includes)
+                query = query.Include(include);
+        }
+
+        return await query.FirstOrDefaultAsync();
+    }
+    public async Task<IEnumerable<T>> GetAllAsync(params Expression<Func<T, object>>[]? includes)
     {
         IQueryable<T> query = _context.Set<T>().AsNoTracking();
 
@@ -41,7 +54,7 @@ public class BaseRepository<T> : IBaseRepository<T> where T : class
 
         return await query.ToListAsync();
     }
-    public async Task<IEnumerable<T>> FindAllAsync(Expression<Func<T, bool>> criteria, Expression<Func<T, object>>[]? includes = null)
+    public async Task<IEnumerable<T>> FindAllAsync(Expression<Func<T, bool>> criteria, params Expression<Func<T, object>>[]? includes)
     {
         IQueryable<T> query = _context.Set<T>().Where(criteria).AsNoTracking();
 

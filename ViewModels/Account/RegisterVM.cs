@@ -1,12 +1,12 @@
-﻿namespace Giftify.ViewModels;
+﻿namespace Giftify.ViewModels.Account;
 using System.ComponentModel.DataAnnotations;
 
-    public class RegisterVM
-    {
+public class RegisterVM
+{
 
 
-     [Required]
-     [StringLength(100)]
+    [Required]
+    [StringLength(100)]
     public string FullName { get; set; }
 
     [Required]
@@ -42,5 +42,5 @@ using System.ComponentModel.DataAnnotations;
 
 
 
-    }
+}
 

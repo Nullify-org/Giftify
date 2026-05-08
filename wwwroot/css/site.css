@@ -1,31 +1,57 @@
-html {
-  font-size: 14px;
+/* Logo Styling */
+.brand-g {
+    font-size: 2rem;
+    font-weight: bold;
+    color: #C07C44; /* The brownish-orange from the image */
+    font-family: 'Serif', Georgia;
 }
 
-@media (min-width: 768px) {
-  html {
-    font-size: 16px;
-  }
+.brand-text {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: #C07C44;
 }
 
-.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
-  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
+/* Search Bar */
+.search-container {
+    position: relative;
+    max-width: 600px;
 }
 
-html {
-  position: relative;
-  min-height: 100%;
+.search-input {
+    border-radius: 50px !important;
+    background-color: #f3f3f3;
+    border: 1px solid #ddd;
+    padding-left: 20px;
 }
 
-body {
-  margin-bottom: 60px;
+.search-icon {
+    position: absolute;
+    right: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #666;
 }
 
-.form-floating > .form-control-plaintext::placeholder, .form-floating > .form-control::placeholder {
-  color: var(--bs-secondary-color);
-  text-align: end;
+/* Sign In Button */
+.btn-signin {
+    background-color: #E8DCCF; /* Light beige from image */
+    color: #000;
+    font-weight: 500;
+    border: none;
 }
 
-.form-floating > .form-control-plaintext:focus::placeholder, .form-floating > .form-control:focus::placeholder {
-  text-align: start;
+    .btn-signin:hover {
+        background-color: #d8ccc0;
+    }
+
+/* Navbar links adjustment */
+.nav-link {
+    font-size: 0.95rem;
+    padding: 0 10px !important;
+}
+
+.category-bar {
+    font-size: 0.85rem;
+    cursor: pointer;
 }

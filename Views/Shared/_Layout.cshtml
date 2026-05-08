@@ -4,69 +4,116 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - Giftify</title>
-    <script type="importmap"></script>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/Giftify.styles.css" asp-append-version="true" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
 </head>
 <body>
     <header>
-    <nav class="navbar navbar-expand-sm navbar-light bg-white border-bottom py-3">
-        <div class="container-fluid px-4">
-            <a class="navbar-brand d-flex align-items-center" asp-area="" asp-controller="Home" asp-action="Index">
-                <span class="brand-g">G</span>
-                <span class="brand-text ms-2">Giftify</span>
-            </a>
+        <nav class="navbar navbar-expand-md navbar-light bg-white border-bottom py-3">
+            <div class="container-fluid px-4">
+                <a class="navbar-brand d-flex align-items-center" asp-controller="Home" asp-action="Index">
+                    <span class="brand-g">G</span>
+                    <span class="brand-text ms-2">Giftify</span>
+                </a>
 
-            <div class="flex-grow-1 mx-4 d-none d-md-block">
-                <div class="search-container">
-                    <input type="text" class="form-control search-input" placeholder="Search for anything">
-                    <i class="bi bi-search search-icon"></i>
+                <div class="flex-grow-1 mx-4 d-none d-lg-block">
+                    <div class="search-container">
+                        <input type="text" class="form-control search-input" placeholder="Search for anything">
+                        <i class="bi bi-search search-icon"></i>
+                    </div>
+                </div>
+
+                <div class="d-flex align-items-center">
+                    <div class="nav-links-desktop d-none d-md-flex align-items-center">
+                        <a class="nav-link text-dark mx-2" href="#">Products</a>
+                        <a class="nav-link text-dark mx-2" href="#">Blog</a>
+                        <a class="nav-link text-dark mx-2" href="#">Register</a>
+                        <a class="btn btn-signin rounded-pill px-4 mx-2" href="#">Sign in</a>
+                    </div>
+
+                    <a class="nav-link text-dark ms-3 position-relative" href="#">
+                        <i class="bi bi-cart3 fs-5"></i>
+                        <span class="badge rounded-pill bg-dark position-absolute top-0 start-100 translate-middle">3</span>
+                    </a>
+
+                    <div class="mobile-menu-container ms-3">
+                        <button class="menu-toggle-btn" onclick="toggleMobileMenu()">
+                            <i class="bi bi-list fs-3"></i>
+                        </button>
+                        
+                        <div class="mobile-dropdown" id="mobileMenu">
+                            <a href="#">Products</a>
+                            <a href="#">Categories</a>
+                            <a href="#">Blog</a>
+                            <a href="#">Register</a>
+                            <a href="#" class="fw-bold">Sign in</a>
+                            <hr>
+                            <a href="#">Help Center</a>
+                        </div>
+                    </div>
                 </div>
             </div>
+        </nav>
+    </header>
 
-            <div class="navbar-collapse collapse d-sm-inline-flex justify-content-end align-items-center">
-                <ul class="navbar-nav align-items-center">
-                    <li class="nav-item"><a class="nav-link text-dark" href="#">Products</a></li>
-                    <li class="nav-item"><a class="nav-link text-dark" href="#">Categories</a></li>
-                    <li class="nav-item"><a class="nav-link text-dark" href="#">Blog</a></li>
-                    <li class="nav-item"><a class="nav-link text-dark" href="#">Register</a></li>
-                    <li class="nav-item ms-2">
-                        <a class="btn btn-signin rounded-pill px-4" asp-controller="Account" asp-action="Login">Sign in</a>
-                    </li>
-                    <li class="nav-item ms-3"><a class="nav-link text-dark" href="#">Help</a></li>
-                    <li class="nav-item ms-3">
-                        <a class="nav-link text-dark position-relative" href="#">
-                            <i class="bi bi-cart3 fs-5"></i>
-                            <span class="badge rounded-pill bg-dark position-absolute top-0 start-100 translate-middle">3</span>
-                        </a>
-                    </li>
-                    <li class="nav-item ms-3">
-                        <a class="nav-link text-dark" href="#"><i class="bi bi-list fs-4"></i></a>
-                    </li>
-                </ul>
-            </div>
-        </div>
-    </nav>
-    <div class="category-bar text-end px-4 py-1">
-        <small class="fw-bold">Categories <i class="bi bi-chevron-down"></i></small>
-    </div>
-</header>
-    <div class="container">
+    <div class="container mt-4">
         <main role="main" class="pb-3">
             @RenderBody()
         </main>
     </div>
 
-    <footer class="border-top footer text-muted">
-        <div class="container">
-            &copy; 2026 - Giftify - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+    <footer class="giftify-footer mt-5">
+        <div class="footer-top">
+            <div class="footer-brand">
+                <h2 class="logo-text">Giftify</h2>
+                <button class="app-download-btn mt-3">Download the Giftify App</button>
+            </div>
+            <div class="footer-links">
+                <div class="link-group">
+                    <h3>Shop</h3>
+                    <ul>
+                        <li><a href="#">Gift cards</a></li>
+                        <li><a href="#">Sitemap</a></li>
+                        <li><a href="#">Giftify Blog</a></li>
+                    </ul>
+                </div>
+                <div class="link-group">
+                    <h3>About</h3>
+                    <ul>
+                        <li><a href="#">Policies</a></li>
+                        <li><a href="#">Investors</a></li>
+                        <li><a href="#">Careers</a></li>
+                    </ul>
+                </div>
+                <div class="link-group">
+                    <h3>Help</h3>
+                    <ul>
+                        <li><a href="#">Help Center</a></li>
+                        <li><a href="#">Privacy Settings</a></li>
+                        <div class="social-icons mt-3">
+                            <i class="bi bi-instagram me-3"></i>
+                            <i class="bi bi-facebook me-3"></i>
+                            <i class="bi bi-pinterest"></i>
+                        </div>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom mt-5">
+            <div class="location-settings">
+                <span>Egypt | English (US) | EGP</span>
+            </div>
+            <div class="legal-links">
+                <span>&copy; 2026 Giftify, Inc.</span>
+                <a href="#" class="ms-3">Terms of Use</a>
+                <a href="#" class="ms-3">Privacy</a>
+            </div>
         </div>
     </footer>
+
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
-    @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

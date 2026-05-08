@@ -1,28 +1,181 @@
-/* Logo Styling */
+/* General Page Layout */
+body {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    margin: 0;
+}
+
+.container {
+    flex: 1; /* يضمن بقاء الفوتر في أسفل الصفحة دائماً */
+}
+
+/* Navbar Enhancements */
 .brand-g {
-    font-size: 2rem;
+    font-size: 2.2rem;
     font-weight: bold;
-    color: #C07C44; /* The brownish-orange from the image */
+    color: #C07C44;
     font-family: 'Serif', Georgia;
 }
 
 .brand-text {
-    font-size: 1.5rem;
+    font-size: 1.6rem;
     font-weight: 600;
     color: #C07C44;
 }
 
-/* Search Bar */
 .search-container {
     position: relative;
-    max-width: 600px;
+    width: 100%;
 }
 
 .search-input {
     border-radius: 50px !important;
     background-color: #f3f3f3;
-    border: 1px solid #ddd;
-    padding-left: 20px;
+    padding-right: 40px;
+    transition: all 0.3s ease;
+}
+
+    .search-input:focus {
+        background-color: #fff;
+        border-color: #C07C44;
+        box-shadow: 0 0 8px rgba(192, 124, 68, 0.2);
+    }
+
+.search-icon {
+    position: absolute;
+    right: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #666;
+}
+
+/* Custom Dropdown Animation */
+.dropdown-menu-custom {
+    display: block;
+    visibility: hidden;
+    opacity: 0;
+    transform: translateY(15px);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    position: absolute;
+    right: 0;
+    top: 100%;
+    background: #fff;
+    min-width: 200px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+    border-radius: 12px;
+    z-index: 1050;
+    padding: 10px 0;
+}
+
+    .dropdown-menu-custom.show {
+        visibility: visible;
+        opacity: 1;
+        transform: translateY(5px);
+    }
+
+/* Footer Styling - This will fix the plain look in your image */
+.giftify-footer {
+    background-color: #2f213f;
+    color: white;
+    padding: 50px 10% 20px;
+}
+
+.footer-top {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+
+.logo-text {
+    color: #f1641e;
+    font-size: 2.5rem;
+    margin: 0;
+}
+
+.footer-links {
+    display: flex;
+    gap: 60px;
+    flex-wrap: wrap;
+}
+
+.link-group h3 {
+    font-size: 1.1rem;
+    margin-bottom: 20px;
+    color: #fff;
+}
+
+.link-group ul {
+    list-style: none;
+    padding: 0;
+}
+
+    .link-group ul li {
+        margin-bottom: 10px;
+    }
+
+.link-group a {
+    color: #ccc;
+    text-decoration: none;
+    font-size: 0.9rem;
+    transition: color 0.3s;
+}
+
+    .link-group a:hover {
+        color: #f1641e;
+    }
+
+.footer-bottom {
+    margin-top: 40px;
+    padding-top: 20px;
+    border-top: 1px solid #4e445d;
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.85rem;
+    color: #aaa;
+}
+
+.legal-links a {
+    color: #aaa;
+    text-decoration: none;
+    margin-left: 15px;
+}
+
+.app-download-btn {
+    background-color: #4e445d;
+    border: none;
+    color: white;
+    padding: 10px 20px;
+    border-radius: 25px;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+
+    .app-download-btn:hover {
+        background-color: #635775;
+    }
+.brand-g {
+    font-size: 2.2rem;
+    font-weight: bold;
+    color: #C07C44;
+}
+
+.brand-text {
+    font-size: 1.6rem;
+    font-weight: 600;
+    color: #C07C44;
+}
+
+.search-container {
+    position: relative;
+    width: 100%;
+}
+
+.search-input {
+    border-radius: 50px !important;
+    background-color: #f3f3f3;
+    padding-right: 40px;
 }
 
 .search-icon {
@@ -33,25 +186,131 @@
     color: #666;
 }
 
-/* Sign In Button */
 .btn-signin {
-    background-color: #E8DCCF; /* Light beige from image */
-    color: #000;
-    font-weight: 500;
-    border: none;
+    background-color: #f3f3f3 !important;
+    color: #000 !important;
+    border: 1px solid #ddd !important;
+    transition: 0.3s;
 }
 
     .btn-signin:hover {
-        background-color: #d8ccc0;
+        background-color: #e5e5e5 !important;
     }
 
-/* Navbar links adjustment */
-.nav-link {
-    font-size: 0.95rem;
-    padding: 0 10px !important;
+.mobile-menu-container {
+    position: relative;
+    display: block;
 }
 
-.category-bar {
-    font-size: 0.85rem;
+.menu-toggle-btn {
+    background: none;
+    border: none;
     cursor: pointer;
+    color: #333;
+}
+
+.mobile-dropdown {
+    display: block;
+    visibility: hidden;
+    opacity: 0;
+    transform: translateY(10px);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    position: absolute;
+    right: 0;
+    top: 100%;
+    background: white;
+    min-width: 200px;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+    border-radius: 12px;
+    padding: 15px 0;
+    z-index: 2000;
+}
+
+    .mobile-dropdown.show {
+        visibility: visible;
+        opacity: 1;
+        transform: translateY(5px);
+    }
+
+    .mobile-dropdown a {
+        display: block;
+        padding: 12px 20px;
+        color: #333;
+        text-decoration: none;
+    }
+
+        .mobile-dropdown a:hover {
+            background-color: #f8f9fa;
+            color: #C07C44;
+        }
+
+@media (min-width: 768px) {
+    .mobile-menu-container {
+        display: none;
+    }
+}
+
+.giftify-footer {
+    background-color: #2f213f;
+    color: white;
+    padding: 50px 10% 20px;
+}
+
+.footer-top {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+}
+
+.logo-text {
+    color: #f1641e;
+    font-size: 2.5rem;
+}
+
+.footer-links {
+    display: flex;
+    gap: 60px;
+}
+
+.link-group h3 {
+    font-size: 1.1rem;
+    margin-bottom: 20px;
+}
+
+.link-group ul {
+    list-style: none;
+    padding: 0;
+}
+
+    .link-group ul li {
+        margin-bottom: 10px;
+    }
+
+.link-group a {
+    color: #ccc;
+    text-decoration: none;
+    font-size: 0.9rem;
+}
+
+.footer-bottom {
+    margin-top: 40px;
+    padding-top: 20px;
+    border-top: 1px solid #4e445d;
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.85rem;
+    color: #aaa;
+}
+
+.legal-links a {
+    color: #aaa;
+    text-decoration: none;
+}
+
+.app-download-btn {
+    background-color: #4e445d;
+    border: none;
+    color: white;
+    padding: 10px 20px;
+    border-radius: 25px;
 }

@@ -1,5 +1,10 @@
 using Giftify.Data;
+using Giftify.Interfaces;
+using Giftify.Interfaces.Repositories;
+using Giftify.Interfaces.Services;
 using Giftify.Models;
+using Giftify.Repositories;
+using Giftify.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
@@ -21,6 +26,19 @@ namespace Giftify
             {
 
             }).AddEntityFrameworkStores<ApplicationDbContext>();
+
+            builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+
+            builder.Services.AddScoped<IProductRepository, ProductRepository>();
+            builder.Services.AddScoped<IOrderRepository, OrderRepository>();
+            builder.Services.AddScoped<ICartRepository, CartRepository>();
+
+
+            builder.Services.AddScoped<IProductService, ProductService>();
+            builder.Services.AddScoped<IOrderService, OrderService>();
+            builder.Services.AddScoped<ICartService, CartService>();
+
+
 
             // Add services to the container.
             builder.Services.AddControllersWithViews();

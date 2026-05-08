@@ -1,5 +1,7 @@
-﻿namespace Giftify.Interfaces.Repositories;
+﻿using Giftify.Models;
 
-public interface IProductRepository
+namespace Giftify.Interfaces.Repositories;
+
+public interface IProductRepository : IBaseRepository<Product>
 {
 }

@@ -2,7 +2,7 @@
 
 namespace Giftify.Interfaces.Repositories;
 
-public interface IBaseRepository<T>
+public interface IBaseRepository<T> where T : class
 {
     Task<T?> GetByIdAsync(int id);
     Task<T?> FindAsync(Expression<Func<T, bool>> criteria, params Expression<Func<T, object>>[]? includes);

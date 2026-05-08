@@ -57,7 +57,7 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
               .HasOne(oc => oc.Category)
               .WithMany(c => c.OccasionCategories)
               .HasForeignKey(oc => oc.CategoryId);
-        // 
+
         // One User → One Cart
         builder.Entity<Cart>()
             .HasOne(c => c.User)

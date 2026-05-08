@@ -17,7 +17,6 @@ public class ProductsController : Controller
     }
 
     public async Task<IActionResult> Details(int id)
-    
     {
         ProductDetailsVM product = await _productService.GetProductDetailsAsync(id);
         return View(product);

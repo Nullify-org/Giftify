@@ -12,12 +12,13 @@ public class UnitOfWork : IUnitOfWork
     public IOrderRepository Orders { get; private set; }
     public IProductRepository Products { get; private set; }
 
-    public UnitOfWork(ApplicationDbContext context)
+    public UnitOfWork(ApplicationDbContext context, ICartRepository cartRepo, 
+                        IOrderRepository orderRepo, IProductRepository productRepo)
     {
         this._context = context;
-        Carts = new CartRepository(_context);
-        Orders = new OrderRepository(_context);
-        Products = new ProductRepository(_context);
+        Carts = cartRepo;
+        Orders = orderRepo;
+        Products = productRepo;
     }
 
     public async Task<int> Save()

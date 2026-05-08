@@ -1,5 +1,7 @@
-﻿namespace Giftify.Interfaces.Repositories;
+﻿using Giftify.Models;
 
-public interface IOrderRepository
+namespace Giftify.Interfaces.Repositories;
+
+public interface IOrderRepository : IBaseRepository<Order>
 {
 }

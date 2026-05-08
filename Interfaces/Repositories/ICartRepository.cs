@@ -1,5 +1,7 @@
-﻿namespace Giftify.Interfaces.Repositories;
+﻿using Giftify.Models;
 
-public interface ICartRepository
+namespace Giftify.Interfaces.Repositories;
+
+public interface ICartRepository : IBaseRepository<Cart>
 {
 }

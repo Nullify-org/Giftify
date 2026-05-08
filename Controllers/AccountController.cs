@@ -63,7 +63,7 @@ namespace Giftify.Controllers
                 ModelState.AddModelError(string.Empty, error.Description);
             }
 
-            return View(" Register", userFromReq);
+            return View(userFromReq);
         }
 
 

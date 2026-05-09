@@ -1,6 +1,10 @@
 ﻿namespace Giftify.Enums
 {
-    public class PaymentMethod
+    public enum PaymentMethod
     {
+        CreditCard,
+        PayPal,
+        BankTransfer,
+        CashOnDelivery
     }
 }

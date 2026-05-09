@@ -22,13 +22,8 @@ namespace Giftify.Services
             {
                 Id = c.Id,
                 Name = c.Name,
-<<<<<<< HEAD
                 //Description = c.Description,
                 //IsActive = c.IsActive
-=======
-                Description = c.Description,
-                IsActive = c.IsActive
->>>>>>> 1e4876017e0475229b7cb5fd3cb178f81b5991d5
             });
             return categoriesVM;
         }
@@ -54,7 +49,7 @@ namespace Giftify.Services
                 Name = categoryCreateVM.Name
             };
             await _unitOfWork.Categories.AddAsync(category);
-            await _unitOfWork.SaveChangesAsync();
+            await _unitOfWork.Save();
         }
 
         public async Task UpdateCategoryAsync(int categoryId, CategoryEditVM categoryEditVM)
@@ -64,9 +59,8 @@ namespace Giftify.Services
                 throw new Exception("Category not found");
             category.Name = categoryEditVM.Name;
             _unitOfWork.Categories.Update(category);
-            await _unitOfWork.SaveChangesAsync();
+            await _unitOfWork.Save();
         }
     }
 }
 
-   

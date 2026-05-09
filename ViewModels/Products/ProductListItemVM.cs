@@ -1,3 +1,6 @@
+﻿using Giftify.ViewModels.Categories;
+using Giftify.ViewModels.Occasions;
+
 namespace Giftify.ViewModels.Products;
 
 public class ProductListItemVM
@@ -12,4 +15,6 @@ public class ProductListItemVM
     // FIX: needed for controller-level filtering
     public int CategoryId { get; set; }
     public List<int> OccasionIds { get; set; } = new List<int>();
+    public List<CategoryVM> Categories { get; set; }
+    public List<OccasionVM> Occasions { get; set; }
 }

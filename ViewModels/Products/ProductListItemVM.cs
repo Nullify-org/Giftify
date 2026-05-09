@@ -10,4 +10,6 @@ public class ProductListItemVM
     public string Name { get; set; }
     public decimal Price { get; set; }
     public bool IsInStock { get; set; }
+    public List<CategoryVM> Categories { get; set; }
+    public List<OccasionVM> Occasions { get; set; }
 }

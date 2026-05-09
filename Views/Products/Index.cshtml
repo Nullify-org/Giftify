@@ -1,1 +1,160 @@
-﻿
+﻿@using Giftify.ViewModels.Products
+@model ProductIndexVM
+
+@{
+    ViewData["Title"] = "Giftify Shop - Find the Perfect Gift";
+}
+
+<div class="container-fluid mt-4 px-lg-5">
+    <div class="row">
+        <!-- Sidebar Filtration Section -->
+        <aside class="col-lg-3 col-md-4 mb-4">
+            <div class="card border-0 shadow-sm sticky-top" style="top: 20px;">
+                <div class="card-header bg-dark text-white fw-bold py-3">
+                    <i class="bi bi-filter-left me-2"></i> Filter Gifts
+                </div>
+                <div class="card-body p-4">
+                    <form asp-controller="Products" asp-action="Index" method="get">
+
+                        <!-- 1. Search Term -->
+                        <div class="mb-4">
+                            <label class="form-label fw-bold small text-muted text-uppercase">Search</label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-white border-end-0"><i class="bi bi-search"></i></span>
+                                <input type="text" name="SearchTerm" class="form-control border-start-0 shadow-none"
+                                       placeholder="What are you looking for?"
+                                       value="@Model.CurrentFilters.SearchTerm">
+                            </div>
+                        </div>
+
+                        <!-- 2. Category Dropdown -->
+                        <div class="mb-4">
+                            <label class="form-label fw-bold small text-muted text-uppercase">Category</label>
+                            <select name="CategoryId" class="form-select shadow-none">
+                                <option value="">All Categories</option>
+                                @foreach (var cat in Model.Categories)
+                                {
+                                    <option value="@cat.Id"
+                                            selected="@(Model.CurrentFilters.CategoryId == cat.Id ? "selected" : null)">
+                                        @cat.Name
+                                    </option>
+                                }
+                            </select>
+                        </div>
+
+                        <!-- 3. Occasions Checkboxes (Multi-select) -->
+                        <div class="mb-4">
+                            <label class="form-label fw-bold small text-muted text-uppercase">Occasions</label>
+                            <div class="filter-scroll overflow-auto pe-2" style="max-height: 200px;">
+                                @foreach (var occasion in Model.Occasions)
+                                {
+                                    <div class="form-check mb-2">
+                                        <input class="form-check-input shadow-none" type="checkbox"
+                                               name="OccasionIds"
+                                               value="@occasion.Id"
+                                               id="occ_@occasion.Id"
+                                               @(Model.CurrentFilters.OccasionIds != null && Model.CurrentFilters.OccasionIds.Contains(occasion.Id) ? "checked" : "")>
+                                        <label class="form-check-label small text-secondary" for="occ_@occasion.Id">
+                                            @occasion.Name
+                                        </label>
+                                    </div>
+                                }
+                            </div>
+                        </div>
+
+                        <!-- 4. Price Range -->
+                        <div class="mb-4">
+                            <label class="form-label fw-bold small text-muted text-uppercase">Price Range</label>
+                            <div class="d-flex align-items-center gap-2">
+                                <input type="number" name="MinPrice" class="form-control form-control-sm shadow-none"
+                                       placeholder="Min" value="@Model.CurrentFilters.MinPrice">
+                                <span class="text-muted">-</span>
+                                <input type="number" name="MaxPrice" class="form-control form-control-sm shadow-none"
+                                       placeholder="Max" value="@Model.CurrentFilters.MaxPrice">
+                            </div>
+                        </div>
+
+                        <hr class="my-4">
+
+                        <!-- Action Buttons -->
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-primary fw-bold rounded-pill">
+                                Apply Filters
+                            </button>
+                            <a asp-action="Index" class="btn btn-outline-secondary btn-sm rounded-pill">
+                                Reset All
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Product Grid Section -->
+        <main class="col-lg-9 col-md-8">
+            <div class="d-flex justify-content-between align-items-end mb-4 px-2">
+                <div>
+                    <h2 class="fw-bold mb-1">Our Collection</h2>
+                    <p class="text-muted small mb-0">Found @Model.Products.Count() items for you</p>
+                </div>
+            </div>
+
+            @if (!Model.Products.Any())
+            {
+                <div class="text-center py-5 bg-white rounded-4 shadow-sm">
+                    <i class="bi bi-search display-1 text-light"></i>
+                    <h4 class="mt-3 text-dark">No matches found</h4>
+                    <p class="text-muted">Try changing your filters or keywords.</p>
+                    <a asp-action="Index" class="btn btn-link">View all products</a>
+                </div>
+            }
+            else
+            {
+                <div class="row row-cols-1 row-cols-md-2 row-cols-xl-3 g-4">
+                    @foreach (var product in Model.Products)
+                    {
+                        <div class="col">
+                            <div class="card h-100 border-0 shadow-sm hover-card overflow-hidden rounded-4">
+                                <!-- Product Image & Badge -->
+                                <div class="position-relative">
+                                    <img src="@product.ImageUrl" class="card-img-top"
+                                         style="height: 250px; object-fit: cover;" alt="@product.Name">
+
+                                    @if (!product.IsInStock)
+                                    {
+                                        <div class="position-absolute top-0 end-0 m-3">
+                                            <span class="badge bg-danger shadow-sm">Out of Stock</span>
+                                        </div>
+                                    }
+                                </div>
+
+                                <!-- Product Info -->
+                                <div class="card-body p-4 d-flex flex-column">
+                                    <h6 class="card-title fw-bold text-dark mb-1 text-truncate">@product.Name</h6>
+                                    <p class="small text-muted mb-3">
+                                        <i class="bi bi-tag-fill me-1"></i> Special Gift
+                                    </p>
+
+                                    <div class="mt-auto">
+                                        <div class="d-flex justify-content-between align-items-center mb-3">
+                                            <span class="fs-5 fw-bold text-primary">@product.Price.ToString("C0")</span>
+                                        </div>
+
+                                        <div class="d-grid gap-2">
+                                            <button class="btn btn-dark rounded-pill py-2 @(product.IsInStock ? "" : "disabled")">
+                                                <i class="bi bi-cart-plus me-2"></i> Add to Cart
+                                            </button>
+                                            <a asp-action="Details" asp-route-id="@product.Id"
+                                               class="btn btn-outline-secondary btn-sm rounded-pill border-0">
+                                                View Details </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+            }
+        </main>
+    </div>
+</div>

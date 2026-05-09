@@ -1,4 +1,7 @@
-﻿namespace Giftify.ViewModels.Products;
+﻿using Giftify.ViewModels.Categories;
+using Giftify.ViewModels.Occasions;
+
+namespace Giftify.ViewModels.Products;
 
 public class ProductListItemVM
 {
@@ -7,4 +10,6 @@ public class ProductListItemVM
     public string Name { get; set; }
     public decimal Price { get; set; }
     public bool IsInStock { get; set; }
+    public List<CategoryVM> Categories { get; set; }
+    public List<OccasionVM> Occasions { get; set; }
 }

@@ -1,8 +1,496 @@
-﻿@{
-    ViewData["Title"] = "Home Page";
+@using Giftify.ViewModels.Home
+@using Giftify.ViewModels.Products
+
+@model HomeVM
+
+@{
+    ViewData["Title"] = "Giftify — Find the Perfect Gift";
+    Layout = "_Layout";
+
+    var featured = Model.FeaturedProducts.ToList();
+
+    var p1 = featured.ElementAtOrDefault(0);
+    var p2 = featured.ElementAtOrDefault(1);
+    var p3 = featured.ElementAtOrDefault(2);
+    var p4 = featured.ElementAtOrDefault(3);
 }
 
-@* //  Made By Nour Eddine Maher
- *@<div class="text-center">
-    <h1 class="display-4">Welcome Giftify (Nour Eddine Maher)</h1>
-</div>git 
+@section Scripts {
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+    <link href="~/css/Home/home.css" rel="stylesheet" />
+}
+
+<section class="hero">
+
+    <div class="hero-bg"></div>
+    <div class="hero-dots"></div>
+
+    <div class="hero-orb hero-orb-1"></div>
+    <div class="hero-orb hero-orb-2"></div>
+
+    <div class="hero-spark"></div>
+    <div class="hero-spark"></div>
+    <div class="hero-spark"></div>
+    <div class="hero-spark"></div>
+    <div class="hero-spark"></div>
+    <div class="hero-spark"></div>
+
+    <div class="hero-ribbon">
+        <div class="hero-ribbon-track">
+            <div class="hero-ribbon-item"><i class="fa fa-gift"></i> Free Gift Wrapping <span class="hero-ribbon-dot"></span></div>
+            <div class="hero-ribbon-item"><i class="fa fa-shipping-fast"></i> Fast Nationwide Delivery <span class="hero-ribbon-dot"></span></div>
+            <div class="hero-ribbon-item"><i class="fa fa-star"></i> 4.8 Star Rating <span class="hero-ribbon-dot"></span></div>
+            <div class="hero-ribbon-item"><i class="fa fa-heart"></i> 10,000+ Happy Gifters <span class="hero-ribbon-dot"></span></div>
+            <div class="hero-ribbon-item"><i class="fa fa-shield-alt"></i> 100% Joy Guarantee <span class="hero-ribbon-dot"></span></div>
+            <div class="hero-ribbon-item"><i class="fa fa-gift"></i> Free Gift Wrapping <span class="hero-ribbon-dot"></span></div>
+            <div class="hero-ribbon-item"><i class="fa fa-shipping-fast"></i> Fast Nationwide Delivery <span class="hero-ribbon-dot"></span></div>
+            <div class="hero-ribbon-item"><i class="fa fa-star"></i> 4.8 Star Rating <span class="hero-ribbon-dot"></span></div>
+            <div class="hero-ribbon-item"><i class="fa fa-heart"></i> 10,000+ Happy Gifters <span class="hero-ribbon-dot"></span></div>
+            <div class="hero-ribbon-item"><i class="fa fa-shield-alt"></i> 100% Joy Guarantee <span class="hero-ribbon-dot"></span></div>
+        </div>
+    </div>
+
+    <div class="hero-body">
+
+        <div class="hero-left">
+
+            <div class="hero-tag">
+                <i class="fa fa-gift"></i>
+                &nbsp; The joy of giving
+            </div>
+
+            <h1>
+                Find the perfect
+                <span class="line2">gift for <em>every</em></span>
+                <span class="line2">occasion.</span>
+            </h1>
+
+            <p class="hero-sub">
+                Thoughtfully curated presents that make them feel truly special &mdash;
+                delivered with care, remembered forever.
+            </p>
+
+            <div class="hero-btns">
+                <a asp-controller="Products" asp-action="Index" class="btn-primary" aria-label="Shop All Gifts">
+                    <i class="fa fa-heart"></i>&nbsp; Shop All Gifts
+                </a>
+                <a href="#occasions" class="btn-ghost" aria-label="Browse Occasions">
+                    <i class="fa fa-th-large"></i>&nbsp; Browse Occasions
+                </a>
+            </div>
+
+            <div class="hero-stats">
+                <div class="hero-stat">
+                    <div class="stat-val">@featured.Count<span>+</span></div>
+                    <div class="stat-lbl">Featured Gifts</div>
+                </div>
+                <div class="hero-stat">
+                    <div class="stat-val">@(Model.Categories?.Count(c => c.IsActive) ?? 0)<span>+</span></div>
+                    <div class="stat-lbl">Categories</div>
+                </div>
+                <div class="hero-stat">
+                    <div class="stat-val">@(Model.Occasions?.Count() ?? 0)<span>+</span></div>
+                    <div class="stat-lbl">Occasions</div>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="hero-right">
+
+            <div class="hero-badge-a">
+                <div class="bicon">&#127873;</div>
+                <div>
+                    <div style="font-size:11px;font-weight:700;color:var(--text)">Most loved gift</div>
+                    <div style="font-size:10px;color:var(--text-muted);font-weight:400">This week's #1 bestseller</div>
+                </div>
+            </div>
+
+            <div class="hero-badge-b">
+                <span class="bstars">&#9733;&#9733;&#9733;&#9733;&#9733;</span>
+                <span>"They absolutely loved it!"</span>
+            </div>
+
+            <div class="hero-collage">
+
+                @if (p1 != null)
+                {
+                    var imgs1 = p1.AllImageUrls != null && p1.AllImageUrls.Count > 0
+                        ? p1.AllImageUrls.Take(3).ToList()
+                        : (!string.IsNullOrEmpty(p1.ImageUrl) ? new List<string> { p1.ImageUrl } : new List<string>());
+                    <div class="hc hc-1 hc-slider" data-interval="5000">
+                        @if (imgs1.Count > 0)
+                        {
+                            @foreach (var (img, idx) in imgs1.Select((img, i) => (img, i)))
+                            {
+                                <img src="@img" alt="@p1.Name"
+                                     class="hc-slide @(idx == 0 ? "hc-slide--active" : "")" />
+                            }
+                        }
+                        else
+                        {
+                            <div class="hc-placeholder hc-placeholder--1">&#127873;</div>
+                        }
+                        <div class="hc-label">
+                            <span><span class="hc-badge">&#10022; Featured</span>@p1.Name</span>
+                        </div>
+                    </div>
+                }
+                else
+                {
+                    <div class="hc hc-1">
+                        <div class="hc-placeholder hc-placeholder--1">&#127873;</div>
+                        <div class="hc-label"><span><span class="hc-badge">&#10022; Featured</span>Luxury Gift Box</span></div>
+                    </div>
+                }
+
+                @if (p2 != null)
+                {
+                    var imgs2 = p2.AllImageUrls != null && p2.AllImageUrls.Count > 0
+                        ? p2.AllImageUrls.Take(3).ToList()
+                        : (!string.IsNullOrEmpty(p2.ImageUrl) ? new List<string> { p2.ImageUrl } : new List<string>());
+                    <div class="hc hc-2 hc-slider" data-interval="5000">
+                        @if (imgs2.Count > 0)
+                        {
+                            @foreach (var (img, idx) in imgs2.Select((img, i) => (img, i)))
+                            {
+                                <img src="@img" alt="@p2.Name"
+                                     class="hc-slide @(idx == 0 ? "hc-slide--active" : "")" />
+                            }
+                        }
+                        else
+                        {
+                            <div class="hc-placeholder hc-placeholder--2">&#127800;</div>
+                        }
+                        <div class="hc-label"><span>@p2.Name</span></div>
+                    </div>
+                }
+                else
+                {
+                    <div class="hc hc-2">
+                        <div class="hc-placeholder hc-placeholder--2">&#127800;</div>
+                        <div class="hc-label"><span>Flowers &amp; Botanicals</span></div>
+                    </div>
+                }
+
+                @if (p3 != null)
+                {
+                    var imgs3 = p3.AllImageUrls != null && p3.AllImageUrls.Count > 0
+                        ? p3.AllImageUrls.Take(3).ToList()
+                        : (!string.IsNullOrEmpty(p3.ImageUrl) ? new List<string> { p3.ImageUrl } : new List<string>());
+                    <div class="hc hc-3 hc-slider" data-interval="5000">
+                        @if (imgs3.Count > 0)
+                        {
+                            @foreach (var (img, idx) in imgs3.Select((img, i) => (img, i)))
+                            {
+                                <img src="@img" alt="@p3.Name"
+                                     class="hc-slide @(idx == 0 ? "hc-slide--active" : "")" />
+                            }
+                        }
+                        else
+                        {
+                            <div class="hc-placeholder hc-placeholder--3">&#128557;</div>
+                        }
+                        <div class="hc-label">
+                            <span><span class="hc-badge">New</span>@p3.Name</span>
+                        </div>
+                    </div>
+                }
+                else
+                {
+                    <div class="hc hc-3">
+                        <div class="hc-placeholder hc-placeholder--3">&#128557;</div>
+                        <div class="hc-label"><span><span class="hc-badge">New</span>Scented Candles</span></div>
+                    </div>
+                }
+
+                @if (p4 != null)
+                {
+                    <div class="hc hc-4">
+                        @if (!string.IsNullOrEmpty(p4.ImageUrl))
+                        {
+                            <img src="@p4.ImageUrl" alt="@p4.Name" />
+                        }
+                        else
+                        {
+                            <div class="hc-placeholder hc-placeholder--4">&#127851;</div>
+                        }
+                    </div>
+                }
+                else
+                {
+                    <div class="hc hc-4">
+                        <div class="hc-placeholder hc-placeholder--4">&#127851;</div>
+                    </div>
+                }
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+<div class="trust-bar">
+    <div class="container">
+        <div class="trust-inner">
+            <div class="trust-item">
+                <div class="trust-icon"><i class="fa fa-gift"></i></div>
+                <div class="trust-text">
+                    <strong>Curated Selection</strong>
+                    <span>Only the most thoughtful gifts</span>
+                </div>
+            </div>
+            <div class="trust-item">
+                <div class="trust-icon"><i class="fa fa-shipping-fast"></i></div>
+                <div class="trust-text">
+                    <strong>Fast &amp; Beautiful</strong>
+                    <span>Signature wrapping &amp; fast shipping</span>
+                </div>
+            </div>
+            <div class="trust-item">
+                <div class="trust-icon"><i class="fa fa-redo-alt"></i></div>
+                <div class="trust-text">
+                    <strong>100% Joy Guarantee</strong>
+                    <span>If they don't love it, returns are on us</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<section class="occ-browse" id="occasions">
+    <div class="container">
+
+        <div class="sec-hd">
+            <div>
+                <div class="sec-tag"><i class="fa fa-calendar-alt"></i> What's the occasion?</div>
+                <h2>Shop by Occasion</h2>
+            </div>
+            <a asp-controller="Products" asp-action="Occasions" class="see-all">
+                See all <i class="fa fa-arrow-right"></i>
+            </a>
+        </div>
+
+        @if (Model.Occasions != null && Model.Occasions.Any())
+        {
+            var occasionData = new (string emoji, string gradient)[]
+            {
+                ("\U0001f382", "linear-gradient(135deg,#f093fb,#f5576c)"),
+                ("\U0001f48d", "linear-gradient(135deg,#4facfe,#00f2fe)"),
+                ("\u2764\ufe0f",  "linear-gradient(135deg,#f77062,#fe5196)"),
+                ("\U0001f37c", "linear-gradient(135deg,#43e97b,#38f9d7)"),
+                ("\U0001f393", "linear-gradient(135deg,#f6d365,#fda085)"),
+                ("\U0001f384", "linear-gradient(135deg,#0f9b58,#00bf72)"),
+                ("\U0001f339", "linear-gradient(135deg,#ee0979,#ff6a00)"),
+                ("\U0001f3e1", "linear-gradient(135deg,#a18cd1,#fbc2eb)")
+            };
+
+            int di = 0;
+
+            <div class="occ-cards">
+                @foreach (var occ in Model.Occasions.Take(8))
+                {
+                    var (emoji, gradient) = di < occasionData.Length
+                        ? occasionData[di]
+                        : ("\U0001f381", "linear-gradient(135deg,#E8A020,#F5C55A)");
+                    di++;
+
+                    <a asp-controller="Products"
+                       asp-action="Index"
+                       asp-route-occasionId="@occ.Id"
+                       class="occ-card">
+
+                        <div class="occ-card-bg" style="background:@gradient"></div>
+                        <div class="occ-card-overlay"></div>
+
+                        <div class="occ-card-body">
+                            <span class="occ-card-emoji">@emoji</span>
+                            <span class="occ-card-name">@occ.Name</span>
+                        </div>
+
+                    </a>
+                }
+            </div>
+        }
+        else
+        {
+            <div class="empty">
+                <div class="empty-icon">&#127881;</div>
+                <p>No occasions yet.</p>
+            </div>
+        }
+
+    </div>
+</section>
+
+<section class="categories">
+    <div class="container">
+
+        <div class="sec-hd">
+            <div>
+                <div class="sec-tag"><i class="fa fa-th-large"></i> Browse by Category</div>
+                <h2>Find the Perfect Category</h2>
+            </div>
+        </div>
+
+        @if (Model.Categories != null && Model.Categories.Any())
+        {
+            <div class="cat-grid">
+                @foreach (var category in Model.Categories)
+                {
+                    <a asp-controller="Products"
+                       asp-action="Index"
+                       asp-route-categoryId="@category.Id"
+                       class="cat-card">
+
+                        <div class="cat-icon"><i class="fa fa-box-open"></i></div>
+                        <span class="cat-name">@category.Name</span>
+
+                        @if (!string.IsNullOrWhiteSpace(category.Description))
+                        {
+                            <span class="cat-desc">@category.Description</span>
+                        }
+
+                        <span class="cat-status @(category.IsActive ? "cat-status--active" : "cat-status--inactive")">
+                            @(category.IsActive ? "Active" : "Inactive")
+                        </span>
+
+                    </a>
+                }
+            </div>
+        }
+
+    </div>
+</section>
+
+<section class="products">
+    <div class="container">
+
+        <div class="sec-hd">
+            <div>
+                <div class="sec-tag"><i class="fa fa-fire"></i> Trending right now</div>
+                <h2>Gifts making people smile this week.</h2>
+            </div>
+        </div>
+
+        @if (featured.Any())
+        {
+            <div class="prod-grid">
+                @foreach (var product in featured)
+                {
+                    <div class="prod-card" onclick="window.location.href='@Url.Action("Details","Products",new{id=product.Id})'" style="cursor:pointer;">
+
+                        <div class="prod-thumb @(!product.IsInStock ? "prod-thumb--oos" : "")">
+
+                            @if (!string.IsNullOrEmpty(product.ImageUrl))
+                            {
+                                <img src="@product.ImageUrl"
+                                     alt="@product.Name"
+                                     loading="lazy"
+                                     onerror="this.style.display='none';this.nextElementSibling.style.display='flex'" />
+                                <div class="prod-no-img" style="display:none">&#127873;</div>
+                            }
+                            else
+                            {
+                                <div class="prod-no-img">&#127873;</div>
+                            }
+
+                            <span class="stock-dot @(product.IsInStock ? "stock-dot--in" : "stock-dot--out")"></span>
+
+                        </div>
+
+                        <div class="prod-body">
+                            <span class="prod-name">@product.Name</span>
+                            <div class="prod-footer">
+                                <span class="prod-price">@product.Price.ToString("C")</span>
+
+                                @if (product.IsInStock)
+                                {
+                                    <form asp-controller="Cart"
+                                          asp-action="Add"
+                                          method="post"
+                                          data-cart-ajax="true"
+                                          onclick="event.stopPropagation();">
+                                        @Html.AntiForgeryToken()
+                                        <input type="hidden" name="productId" value="@product.Id" />
+                                        <button type="submit" class="btn-cart">
+                                            <i class="fa fa-shopping-bag"></i> Add
+                                        </button>
+                                    </form>
+                                }
+                                else
+                                {
+                                    <span class="btn-cart btn-cart--off">Out of Stock</span>
+                                }
+                            </div>
+                        </div>
+
+                    </div>
+                }
+            </div>
+        }
+
+    </div>
+</section>
+
+<div class="stats-banner">
+    <div class="container">
+        <div class="stats-inner">
+            <div class="stat-item">
+                <div class="icon"><i class="fa fa-gift"></i></div>
+                <div class="val">@featured.Count<span>+</span></div>
+                <p>Curated Gifts</p>
+            </div>
+            <div class="stat-item">
+                <div class="icon"><i class="fa fa-heart"></i></div>
+                <div class="val">10,000<span>+</span></div>
+                <p>Happy Gifters</p>
+            </div>
+            <div class="stat-item">
+                <div class="icon"><i class="fa fa-star"></i></div>
+                <div class="val">4.<span>8</span></div>
+                <p>Average Rating</p>
+            </div>
+            <div class="stat-item">
+                <div class="icon"><i class="fa fa-shield-alt"></i></div>
+                <div class="val">100<span>%</span></div>
+                <p>Joy Guarantee</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+(function () {
+    document.querySelectorAll('.hc-slider').forEach(function (card) {
+        var slides = card.querySelectorAll('.hc-slide');
+        if (slides.length < 2) return;
+
+        var current = 0;
+        var timer   = null;
+        var interval = parseInt(card.dataset.interval, 10) || 5000;
+
+        function showSlide(idx) {
+            slides[current].classList.remove('hc-slide--active');
+            current = (idx + slides.length) % slides.length;
+            slides[current].classList.add('hc-slide--active');
+        }
+
+        function startCycle() {
+            if (timer) return;
+            timer = setInterval(function () { showSlide(current + 1); }, interval);
+        }
+
+        function stopCycle() {
+            clearInterval(timer);
+            timer = null;
+        }
+
+        card.addEventListener('mouseenter', startCycle);
+        card.addEventListener('mouseleave', stopCycle);
+    });
+}());
+</script>

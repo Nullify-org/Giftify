@@ -1,5 +1,4 @@
-﻿// Close when clicking outside
-window.addEventListener('click', function (e) {
+﻿window.addEventListener('click', function (e) {
     const menu = document.getElementById("dropdownMenu");
     const toggleBtn = document.querySelector('.dropdown-toggle');
     if (menu && toggleBtn && !toggleBtn.contains(e.target) && !menu.contains(e.target)) {

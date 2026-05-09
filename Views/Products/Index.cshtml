@@ -1,4 +1,5 @@
 ﻿@using Giftify.ViewModels.Products
+<<<<<<< HEAD
 @model ProductIndexVM
 
 @{
@@ -6,17 +7,31 @@
 }
 
 <div class="container-fluid mt-4 px-lg-5">
+=======
+@model IEnumerable<ProductListItemVM>
+
+@{
+    ViewData["Title"] = "Our Products";
+}
+
+<div class="container-fluid mt-4 px-4">
+>>>>>>> 1e4876017e0475229b7cb5fd3cb178f81b5991d5
     <div class="row">
         <!-- Sidebar Filtration -->
         <aside class="col-lg-3 col-md-4 mb-4">
             <div class="card border-0 shadow-sm sticky-top" style="top: 20px;">
                 <div class="card-header bg-dark text-white fw-bold py-3">
+<<<<<<< HEAD
                     <i class="bi bi-filter-left me-2"></i> Filtration
+=======
+                    <i class="bi bi-filter-left me-2"></i> Filter Products
+>>>>>>> 1e4876017e0475229b7cb5fd3cb178f81b5991d5
                 </div>
                 <div class="card-body p-4">
                     <form asp-action="Index" method="get">
                         <!-- Search by Name -->
                         <div class="mb-4">
+<<<<<<< HEAD
                             <label class="form-label fw-bold small text-uppercase text-muted">Search</label>
                             <div class="input-group">
                                 <span class="input-group-text bg-white border-end-0"><i class="bi bi-search"></i></span>
@@ -33,12 +48,27 @@
                                 @foreach (var cat in Model.Categories)
                                 {
                                     <option value="@cat.Id" selected="@(Model.CurrentFilters.CategoryId == cat.Id)">
+=======
+                            <label class="form-label fw-bold">Search</label>
+                            <input type="text" name="searchTerm" class="form-control shadow-none" 
+                                   placeholder="Product name..." value="@ViewData["CurrentSearch"]">
+                        </div>
+
+                        <!-- Category Filter -->
+                        <div class="mb-4">
+                            <label class="form-label fw-bold">Category</label>
+                            <select name="categoryId" class="form-select shadow-none">
+                                <option value="">All Categories</option>
+                                @foreach (var cat in ViewBag.Categories) {
+                                    <option value="@cat.Id" selected="@(ViewData["CurrentCategory"]?.ToString() == cat.Id.ToString() ? "selected" : null)">
+>>>>>>> 1e4876017e0475229b7cb5fd3cb178f81b5991d5
                                         @cat.Name
                                     </option>
                                 }
                             </select>
                         </div>
 
+<<<<<<< HEAD
                         <!-- Occasion Filter (Checkboxes) -->
                         <div class="mb-4">
                             <label class="form-label fw-bold small text-uppercase text-muted">Occasions</label>
@@ -54,6 +84,16 @@
                                         <label class="form-check-label" for="occ_@occasion.Id">
                                             @occasion.Name
                                         </label>
+=======
+                        <!-- Occasion Filter -->
+                        <div class="mb-4">
+                            <label class="form-label fw-bold">Occasions</label>
+                            <div class="overflow-auto" style="max-height: 150px;">
+                                @foreach (var occasion in ViewBag.Occasions) {
+                                    <div class="form-check mb-2">
+                                        <input class="form-check-input" type="checkbox" name="occasionIds" value="@occasion.Id" id="occ_@occasion.Id">
+                                        <label class="form-check-label text-muted" for="occ_@occasion.Id">@occasion.Name</label>
+>>>>>>> 1e4876017e0475229b7cb5fd3cb178f81b5991d5
                                     </div>
                                 }
                             </div>
@@ -61,6 +101,7 @@
 
                         <!-- Price Range -->
                         <div class="mb-4">
+<<<<<<< HEAD
                             <label class="form-label fw-bold small text-uppercase text-muted">Price Range</label>
                             <div class="d-flex align-items-center gap-2">
                                 <input type="number" name="minPrice" class="form-control form-control-sm shadow-none"
@@ -78,11 +119,25 @@
                         <a asp-action="Index" class="btn btn-outline-secondary w-100 btn-sm rounded-pill">
                             Clear All
                         </a>
+=======
+                            <label class="form-label fw-bold">Price Range</label>
+                            <div class="d-flex align-items-center gap-2">
+                                <input type="number" name="minPrice" class="form-control form-control-sm" placeholder="Min">
+                                <span>-</span>
+                                <input type="number" name="maxPrice" class="form-control form-control-sm" placeholder="Max">
+                            </div>
+                        </div>
+
+                        <hr />
+                        <button type="submit" class="btn btn-primary w-100 mb-2 fw-bold">Apply Filters</button>
+                        <a asp-action="Index" class="btn btn-outline-secondary w-100 btn-sm">Clear All</a>
+>>>>>>> 1e4876017e0475229b7cb5fd3cb178f81b5991d5
                     </form>
                 </div>
             </div>
         </aside>
 
+<<<<<<< HEAD
         <!-- Products Main Grid -->
         <main class="col-lg-9 col-md-8">
             <div class="d-flex justify-content-between align-items-center mb-4">
@@ -168,3 +223,38 @@
         </main>
     </div>
 </div>
+=======
+        <!-- Products Main Content -->
+        <main class="col-lg-9 col-md-8">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h2 class="fw-bold m-0">Our Products</h2>
+                <div class="text-muted small">Showing @Model.Count() items</div>
+            </div>
+
+            <div class="row row-cols-1 row-cols-md-2 row-cols-xl-3 g-4">
+                @foreach (var product in Model) {
+                    <div class="col">
+                        <div class="card h-100 border-0 shadow-sm hover-card">
+                            <img src="@product.ImageUrl" class="card-img-top" style="height: 200px; object-fit: cover;" alt="@product.Name">
+                            <div class="card-body">
+                                <h6 class="card-title fw-bold">@product.Name</h6>
+                                <p class="text-success fw-bold mb-3">@product.Price.ToString("C2")</p>
+                                <a asp-action="Details" asp-route-id="@product.Id" class="btn btn-outline-dark btn-sm w-100">View Details</a>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        </main>
+    </div>
+</div>
+
+<style>
+    .sticky-top { z-index: 1010; }
+    .hover-card:hover { 
+        transform: translateY(-5px); 
+        box-shadow: 0 10px 20px rgba(0,0,0,0.08) !important; 
+        transition: 0.3s ease;
+    }
+</style>
+>>>>>>> 1e4876017e0475229b7cb5fd3cb178f81b5991d5

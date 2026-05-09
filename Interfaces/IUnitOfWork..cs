@@ -10,5 +10,4 @@ public interface IUnitOfWork : IDisposable
     IOccasionRepository Occasions { get; }
     ICategoryRepository Categories { get; }
     Task<int> Save();
-    Task SaveChangesAsync();
 }

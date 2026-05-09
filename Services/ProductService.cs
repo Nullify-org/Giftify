@@ -4,6 +4,12 @@ using Giftify.Models;
 using Giftify.ViewModels.Categories;
 using Giftify.ViewModels.Occasions;
 using Giftify.ViewModels.Products;
+using Microsoft.DotNet.Scaffolding.Shared.Project;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.VisualBasic;
+using NuGet.Protocol;
+using System.Linq.Expressions;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace Giftify.Services;
 

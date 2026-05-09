@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 ﻿using Giftify.ViewModels.Categories;
 using Giftify.ViewModels.Occasions;
 
@@ -9,4 +10,10 @@ public class ProductIndexVM
     public IEnumerable<CategoryVM> Categories { get; set; } = new List<CategoryVM>();
     public IEnumerable<OccasionVM> Occasions { get; set; } = new List<OccasionVM>();
     public ProductFilterVM CurrentFilters { get; set;} = new ProductFilterVM();
+=======
+﻿namespace Giftify.ViewModels.Products;
+
+public class ProductIndexVM
+{
+>>>>>>> 1e4876017e0475229b7cb5fd3cb178f81b5991d5
 }

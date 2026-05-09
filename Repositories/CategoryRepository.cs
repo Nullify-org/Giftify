@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 ﻿using Giftify.Data;
 using Giftify.Interfaces.Repositories;
 using Giftify.Models;
@@ -12,5 +13,13 @@ namespace Giftify.Repositories
         {
 
         }
+=======
+﻿using Giftify.Interfaces.Repositories;
+
+namespace Giftify.Repositories
+{
+    public class CategoryRepository : ICategoryRepository
+    {
+>>>>>>> 1e4876017e0475229b7cb5fd3cb178f81b5991d5
     }
 }

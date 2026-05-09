@@ -14,20 +14,35 @@ public class UnitOfWork : IUnitOfWork
     public IOccasionRepository Occasions { get; private set; }
     public ICategoryRepository Categories { get; private set; }
 
+<<<<<<< HEAD
     public UnitOfWork(ApplicationDbContext context, ICartRepository cartRepo,
                         IOrderRepository orderRepo, IProductRepository productRepo,
                         ICategoryRepository categoryRepo, IOccasionRepository occasions)
+=======
+    public ICategoryRepository Categories { get; private set; }
+
+    public UnitOfWork(ApplicationDbContext context, ICartRepository cartRepo, 
+                        IOrderRepository orderRepo, IProductRepository productRepo , ICategoryRepository categoryRepo)
+>>>>>>> 1e4876017e0475229b7cb5fd3cb178f81b5991d5
     {
         this._context = context;
         Carts = cartRepo;
         Orders = orderRepo;
         Products = productRepo;
         Categories = categoryRepo;
+<<<<<<< HEAD
         Occasions = occasions;
     }
 
 
 
+=======
+        
+    }
+
+    
+    
+>>>>>>> 1e4876017e0475229b7cb5fd3cb178f81b5991d5
     public void Dispose()
     {
         _context?.Dispose();

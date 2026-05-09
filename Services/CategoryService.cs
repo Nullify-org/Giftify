@@ -22,8 +22,8 @@ namespace Giftify.Services
             {
                 Id = c.Id,
                 Name = c.Name,
-                Description = c.Description,
-                IsActive = c.IsActive
+                //Description = c.Description,
+                //IsActive = c.IsActive
             });
             return categoriesVM;
         }

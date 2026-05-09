@@ -4,6 +4,7 @@ namespace Giftify.Interfaces.Services;
 
 public interface IProductService
 {
-    Task<IEnumerable<ProductListItemVM>> GetAllProductsForCardsAsync();
+    Task<ProductIndexVM> GetAllProductsForIndexAsync();
     Task<ProductDetailsVM> GetProductDetailsAsync(int productId);
+    Task<ProductIndexVM> GetFilteredProductsAsync(ProductFilterVM model);
 }

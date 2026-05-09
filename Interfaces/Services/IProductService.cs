@@ -1,4 +1,4 @@
-﻿using Giftify.ViewModels.Products;
+using Giftify.ViewModels.Products;
 
 namespace Giftify.Interfaces.Services;
 

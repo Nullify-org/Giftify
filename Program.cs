@@ -1,13 +1,14 @@
 using Giftify.Data;
+using Giftify.Data.Seeder;
 using Giftify.Interfaces;
 using Giftify.Interfaces.Repositories;
 using Giftify.Interfaces.Services;
 using Giftify.Models;
 using Giftify.Repositories;
 using Giftify.Services;
+using Microsoft.AspNetCore.Authentication.Google;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.AspNetCore.Authentication.Google;
 
 namespace Giftify
 {
@@ -64,6 +65,8 @@ namespace Giftify
             builder.Services.AddScoped<ICategoryService, CategoryService>();
             builder.Services.AddScoped<IOccasionService, OccasionService>();
             builder.Services.AddControllersWithViews();
+            //made by mohamed mostafa data seeding should be writtenbefore building the app to be able to use it in the seeding process
+            builder.Services.AddScoped<ApplicationDbSeeder>();
 
             var app = builder.Build();
 
@@ -81,6 +84,27 @@ namespace Giftify
             app.MapControllerRoute(
                 name: "default",
                 pattern: "{controller=Home}/{action=Index}/{id?}");
+
+
+
+            // made by mohamed mostafa data seeding
+            using (var scope = app.Services.CreateScope())
+            {
+                var seeder = scope.ServiceProvider.GetRequiredService<ApplicationDbSeeder>();
+                seeder.SeedAsync().GetAwaiter().GetResult();
+            }
+
+
+            /**
+             * 1-update-database
+             * 2-build the app
+             * 3-run the app to seed the data
+             * 4-go the the proudct in heading and check if the data is seeded or not   
+             */
+
+
+
+
 
             app.Run();
         }

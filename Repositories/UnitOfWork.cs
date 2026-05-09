@@ -12,21 +12,33 @@ public class UnitOfWork : IUnitOfWork
     public IOrderRepository Orders { get; private set; }
     public IProductRepository Products { get; private set; }
 
+    public ICategoryRepository Categories { get; private set; }
+
     public UnitOfWork(ApplicationDbContext context, ICartRepository cartRepo, 
-                        IOrderRepository orderRepo, IProductRepository productRepo)
+                        IOrderRepository orderRepo, IProductRepository productRepo , ICategoryRepository categoryRepo)
     {
         this._context = context;
         Carts = cartRepo;
         Orders = orderRepo;
         Products = productRepo;
+        Categories = categoryRepo;
+        
     }
 
-    public async Task<int> Save()
-    {
-        return await _context.SaveChangesAsync();
-    }
+    
+    
     public void Dispose()
     {
         _context?.Dispose();
+    }
+
+    public Task<int> Save()
+    {
+        throw new NotImplementedException();
+    }
+
+    public Task SaveChangesAsync()
+    {
+        throw new NotImplementedException();
     }
 }

@@ -12,6 +12,8 @@ public class ProductsController : Controller
     }
     public async Task<IActionResult> Index()
     {
+
+
         IEnumerable<ProductListItemVM> products = await _productService.GetAllProductsForCardsAsync();
         return View(products);
     }

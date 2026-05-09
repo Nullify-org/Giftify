@@ -12,15 +12,8 @@ public class ProductsController : Controller
     }
     public async Task<IActionResult> Index(ProductFilterVM filter)
     {
-<<<<<<< HEAD
         ProductIndexVM productIndex = await _productService.GetFilteredProductsAsync(filter);
         return View(productIndex);
-=======
-
-
-        IEnumerable<ProductListItemVM> products = await _productService.GetAllProductsForCardsAsync();
-        return View(products);
->>>>>>> 1e4876017e0475229b7cb5fd3cb178f81b5991d5
     }
 
     public async Task<IActionResult> Details(int id)

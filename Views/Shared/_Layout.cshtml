@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -6,110 +6,64 @@
     <title>@ViewData["Title"] - Giftify</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,500;0,9..144,600;1,9..144,400&family=Satoshi:wght@300;400;500;700&display=swap"
-          rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
 </head>
 <body>
-
     <header>
         <nav class="navbar navbar-expand-md navbar-light bg-white border-bottom py-3">
             <div class="container-fluid px-4">
-
-                <!-- Brand -->
                 <a class="navbar-brand d-flex align-items-center" asp-controller="Home" asp-action="Index">
                     <span class="brand-g">G</span>
                     <span class="brand-text ms-2">Giftify</span>
                 </a>
 
-                <!-- Search (desktop) -->
                 <div class="flex-grow-1 mx-4 d-none d-lg-block">
                     <div class="search-container">
-                        <input type="text" class="form-control search-input" placeholder="Search for anything" />
+                        <input type="text" class="form-control search-input" placeholder="Search for anything">
                         <i class="bi bi-search search-icon"></i>
                     </div>
                 </div>
 
-                <!-- Desktop nav -->
                 <div class="d-flex align-items-center">
                     <div class="nav-links-desktop d-none d-md-flex align-items-center">
-
-                        <a class="nav-link text-dark mx-2" asp-action="Index" asp-controller="Products">Products</a>
+                        <a class="nav-link text-dark mx-2" asp-action="index" asp-controller="products">Products</a>
                         <a class="nav-link text-dark mx-2" href="#">Blog</a>
-
-                        @if (User.Identity != null && User.Identity.IsAuthenticated)
-                        {
-                            <!-- Authenticated: show username + logout -->
-                            <span class="nav-link text-dark mx-2 fw-semibold">
-                                👋 @User.Identity.Name
-                            </span>
-                            <form asp-controller="Account" asp-action="Logout" method="post" class="d-inline">
-                                <button type="submit" class="btn btn-signin rounded-pill px-4 mx-2">
-                                    Sign out
-                                </button>
-                            </form>
-                        }
-                        else
-                        {
-                            <!-- Guest: show Register + Sign in -->
-                            <a class="nav-link text-dark mx-2" asp-action="Register" asp-controller="Account">Register</a>
-                            <a class="btn btn-signin rounded-pill px-4 mx-2" asp-action="Login" asp-controller="Account">Sign in</a>
-                        }
-
+                        <a class="nav-link text-dark mx-2" asp-action="Register" asp-controller="Account">Register</a>
+                        <a class="btn btn-signin rounded-pill px-4 mx-2" asp-action="Login" asp-controller="Account">Sign in</a>
                     </div>
 
-                    <!-- Cart icon -->
-                    <a class="nav-link text-dark ms-3 position-relative" asp-controller="Cart" asp-action="Index">
+                    <a class="nav-link text-dark ms-3 position-relative" href="#">
                         <i class="bi bi-cart3 fs-5"></i>
-                        @{
-                            var cartCount = ViewBag.CartCount as int? ?? 0;
-                        }
-                        @if (cartCount > 0)
-                        {
-                            <span class="badge rounded-pill bg-dark position-absolute top-0 start-100 translate-middle">
-                                @cartCount
-                            </span>
-                        }
+                        <span class="badge rounded-pill bg-dark position-absolute top-0 start-100 translate-middle">3</span>
                     </a>
 
-                    <!-- Mobile hamburger -->
                     <div class="mobile-menu-container ms-3">
                         <button class="menu-toggle-btn" onclick="toggleMobileMenu()">
                             <i class="bi bi-list fs-3"></i>
                         </button>
-
+                        
                         <div class="mobile-dropdown" id="mobileMenu">
-                            <a asp-action="Index" asp-controller="Products">Products</a>
+                            <a href="#">Products</a>
+                            <a href="#">Categories</a>
                             <a href="#">Blog</a>
-                            @if (User.Identity != null && User.Identity.IsAuthenticated)
-                            {
-                                <span class="d-block px-4 py-2 text-muted small">@User.Identity.Name</span>
-                                <form asp-controller="Account" asp-action="Logout" method="post">
-                                    <button type="submit" class="mobile-signout-btn">Sign out</button>
-                                </form>
-                            }
-                            else
-                            {
-                                <a asp-action="Register" asp-controller="Account">Register</a>
-                                <a asp-action="Login" asp-controller="Account" class="fw-bold">Sign in</a>
-                            }
-                            <hr />
+                            <a href="#">Register</a>
+                            <a href="#" class="fw-bold">Sign in</a>
+                            <hr>
                             <a href="#">Help Center</a>
                         </div>
                     </div>
                 </div>
-
             </div>
         </nav>
     </header>
 
-    <!-- NO container wrapper here — pages that need full-width manage their own layout -->
-    <main role="main">
-        @RenderBody()
-    </main>
+    <div class="container mt-4">
+        <main role="main" class="pb-3">
+            @RenderBody()
+        </main>
+    </div>
 
-    <footer class="giftify-footer mt-0">
+    <footer class="giftify-footer mt-5">
         <div class="footer-top">
             <div class="footer-brand">
                 <h2 class="logo-text">Giftify</h2>
@@ -136,13 +90,11 @@
                     <ul>
                         <li><a href="#">Help Center</a></li>
                         <li><a href="#">Privacy Settings</a></li>
-                        <li>
-                            <div class="social-icons mt-3">
-                                <i class="bi bi-instagram me-3"></i>
-                                <i class="bi bi-facebook me-3"></i>
-                                <i class="bi bi-pinterest"></i>
-                            </div>
-                        </li>
+                        <div class="social-icons mt-3">
+                            <i class="bi bi-instagram me-3"></i>
+                            <i class="bi bi-facebook me-3"></i>
+                            <i class="bi bi-pinterest"></i>
+                        </div>
                     </ul>
                 </div>
             </div>
@@ -163,6 +115,5 @@
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
     @await RenderSectionAsync("Scripts", required: false)
-
 </body>
 </html>

@@ -1,16 +1,8 @@
-﻿using Giftify.Data;
-using Giftify.Interfaces.Repositories;
-using Giftify.Models;
+﻿using Giftify.Interfaces.Repositories;
 
-namespace Giftify.Repositories;
-
-    public class CategoryRepository : BaseRepository<Category>, ICategoryRepository
+namespace Giftify.Repositories
+{
+    public class CategoryRepository : ICategoryRepository
     {
-        private readonly ApplicationDbContext _context;
-        public CategoryRepository(ApplicationDbContext context) : base(context)
-        {
-            _context = context;
-        }
     }
-
-   
+}

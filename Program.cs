@@ -1,5 +1,4 @@
 using Giftify.Data;
-using Giftify.Filters;
 using Giftify.Interfaces;
 using Giftify.Interfaces.Repositories;
 using Giftify.Interfaces.Services;
@@ -62,15 +61,7 @@ namespace Giftify
             builder.Services.AddScoped<IOrderService, OrderService>();
             builder.Services.AddScoped<ICartService, CartService>();
             builder.Services.AddScoped<ICategoryService, CategoryService>();
-            builder.Services.AddScoped<IOccasionRepository, OccasionRepository>();
-            builder.Services.AddScoped<IOccasionService, OccasionService>();
-
-            builder.Services.AddScoped<CartCountFilter>();
-
-            builder.Services.AddControllersWithViews(options =>
-            {
-                options.Filters.AddService<CartCountFilter>();
-            });
+            builder.Services.AddControllersWithViews();
 
             var app = builder.Build();
 

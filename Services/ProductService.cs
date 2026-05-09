@@ -4,7 +4,6 @@ using Giftify.Models;
 using Giftify.ViewModels.Categories;
 using Giftify.ViewModels.Occasions;
 using Giftify.ViewModels.Products;
-using System.Linq.Expressions;
 
 namespace Giftify.Services;
 
@@ -17,9 +16,12 @@ public class ProductService : IProductService
         this._unitOfWork = unitOfWork;
     }
 
-    public async Task<IEnumerable<ProductListItemVM>> GetAllProductsForCardsAsync()
+    public async Task<ProductIndexVM> GetAllProductsForIndexAsync()
     {
         var products = await _unitOfWork.Products.GetAllAsync(p => p.Images);
+        var categoris = await _unitOfWork.Categories.GetAllAsync();
+        var occasions = await _unitOfWork.Occasions.GetAllAsync();
+
         var productsVM = products.Select(p =>
         new ProductListItemVM
         {
@@ -30,7 +32,13 @@ public class ProductService : IProductService
             Price = p.Price,
         });
 
-        return productsVM;
+        ProductIndexVM index = new ProductIndexVM
+        {
+            Products = productsVM,
+            Categories = categoris.Select(c => new CategoryVM { Id = c.Id, Name = c.Name }).ToList(),
+            Occasions = occasions.Select(o => new OccasionVM { Id = o.Id, Name = o.Name }).ToList()
+        };
+        return index;
     }
 
     public async Task<ProductDetailsVM> GetProductDetailsAsync(int productId)
@@ -67,5 +75,28 @@ public class ProductService : IProductService
                     }).ToList()
         };
         return productDetailsVM;
+    }
+
+    public async Task<ProductIndexVM> GetFilteredProductsAsync(ProductFilterVM model)
+    {
+        var products = await _unitOfWork.Products.SearchAsync(model);
+        var categories = await _unitOfWork.Categories.GetAllAsync();
+        var occasions = await _unitOfWork.Occasions.GetAllAsync();
+
+        var result = new ProductIndexVM
+        {
+            Products = products.Select(p => new ProductListItemVM
+            {
+                Id = p.Id,
+                Name = p.Name,
+                ImageUrl = p.Images?.FirstOrDefault()?.ImageUrl ?? "default-image.jpg",
+                IsInStock = p.Stock > 0,
+                Price = p.Price
+            }),
+            Categories = categories.Select(c => new CategoryVM { Id = c.Id, Name = c.Name }).ToList(),
+            Occasions = occasions.Select(o => new OccasionVM { Id = o.Id, Name = o.Name }).ToList(),
+            CurrentFilters = model
+        };
+        return result;
     }
 }

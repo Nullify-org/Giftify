@@ -1,32 +1,170 @@
 ﻿@using Giftify.ViewModels.Products
-
-
-@model IEnumerable<ProductListItemVM>
-
+@model ProductIndexVM
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Gift Shop";
 }
 
-<h1>Products Page</h1>
-
-<div>
+<div class="container-fluid mt-4 px-lg-5">
     <div class="row">
-        @foreach (var product in Model)
-        {
-            <div class="col-md-3 gap-4">
-                <div class="card">
-                    <img src="@product.ImageUrl" alt="@product.Name" class="card-img-top">
-                    <div class="card-body">
-                        <h5 class="card-title">@product.Name</h5>
-                        <p class="card-text">@product.Price.ToString("C2")</p>
-                        <p class="card-text">@product.IsInStock</p>
-                        <a asp-action="Details" asp-route-id="@product.Id" class="btn btn-primary">Show Details</a>
-                    </div>
+        <!-- Sidebar Filtration -->
+        <aside class="col-lg-3 col-md-4 mb-4">
+            <div class="card border-0 shadow-sm sticky-top" style="top: 20px;">
+                <div class="card-header bg-dark text-white fw-bold py-3">
+                    <i class="bi bi-filter-left me-2"></i> Filtration
+                </div>
+                <div class="card-body p-4">
+                    <form asp-action="Index" method="get">
+                        <!-- Search by Name -->
+                        <div class="mb-4">
+                            <label class="form-label fw-bold small text-uppercase text-muted">Search</label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-white border-end-0"><i class="bi bi-search"></i></span>
+                                <input type="text" name="searchTerm" class="form-control border-start-0 shadow-none"
+                                       placeholder="Product name..." value="@Model.CurrentFilters.SearchTerm">
+                            </div>
+                        </div>
+
+                        <!-- Category Filter (Dropdown) -->
+                        <div class="mb-4">
+                            <label class="form-label fw-bold small text-uppercase text-muted">Category</label>
+                            <select name="categoryId" class="form-select shadow-none">
+                                <option value="">All Categories</option>
+                                @foreach (var cat in Model.Categories)
+                                {
+                                    <option value="@cat.Id" selected="@(Model.CurrentFilters.CategoryId == cat.Id)">
+                                        @cat.Name
+                                    </option>
+                                }
+                            </select>
+                        </div>
+
+                        <!-- Occasion Filter (Checkboxes) -->
+                        <div class="mb-4">
+                            <label class="form-label fw-bold small text-uppercase text-muted">Occasions</label>
+                            <div class="filter-scroll overflow-auto px-1" style="max-height: 180px;">
+                                @foreach (var occasion in Model.Occasions)
+                                {
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox"
+                                               name="OccasionIds"
+                                               value="@occasion.Id"
+                                               id="occ_@occasion.Id"
+                                               @(Model.CurrentFilters.OccasionIds.Contains(occasion.Id) ? "checked" : "")>
+                                        <label class="form-check-label" for="occ_@occasion.Id">
+                                            @occasion.Name
+                                        </label>
+                                    </div>
+                                }
+                            </div>
+                        </div>
+
+                        <!-- Price Range -->
+                        <div class="mb-4">
+                            <label class="form-label fw-bold small text-uppercase text-muted">Price Range</label>
+                            <div class="d-flex align-items-center gap-2">
+                                <input type="number" name="minPrice" class="form-control form-control-sm shadow-none"
+                                       placeholder="Min" value="@Model.CurrentFilters.MinPrice">
+                                <span class="text-muted">-</span>
+                                <input type="number" name="maxPrice" class="form-control form-control-sm shadow-none"
+                                       placeholder="Max" value="@Model.CurrentFilters.MaxPrice">
+                            </div>
+                        </div>
+
+                        <hr class="my-4">
+                        <button type="submit" class="btn btn-primary w-100 fw-bold rounded-pill mb-2">
+                            Apply Filters
+                        </button>
+                        <a asp-action="Index" class="btn btn-outline-secondary w-100 btn-sm rounded-pill">
+                            Clear All
+                        </a>
+                    </form>
                 </div>
             </div>
-        }
+        </aside>
+
+        <!-- Products Main Grid -->
+        <main class="col-lg-9 col-md-8">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <div>
+                    <h2 class="fw-bold m-0">Our Collection</h2>
+                    <p class="text-muted small">Showing @Model.Products.Count() items matching your criteria</p>
+                </div>
+                <div class="dropdown">
+                    <button class="btn btn-light btn-sm dropdown-toggle border shadow-sm" type="button" data-bs-toggle="dropdown">
+                        Sort by: Newest
+                    </button>
+                    <ul class="dropdown-menu shadow">
+                        <li><a class="dropdown-item" href="#">Price: Low to High</a></li>
+                        <li><a class="dropdown-item" href="#">Price: High to Low</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            @if (!Model.Products.Any())
+            {
+                <div class="text-center py-5">
+                    <i class="bi bi-emoji-frown display-1 text-muted"></i>
+                    <h4 class="mt-3">No products found!</h4>
+                    <p class="text-muted">Try adjusting your filters or search terms.</p>
+                </div>
+            }
+            else
+            {
+                <div class="row row-cols-1 row-cols-md-2 row-cols-xl-3 g-4">
+                    @foreach (var product in Model.Products)
+                    {
+                        <div class="col">
+                            <div class="card h-100 border-0 shadow-sm hover-card overflow-hidden">
+                                <div class="position-relative">
+                                    <img src="@product.ImageUrl" class="card-img-top"
+                                         style="height: 240px; object-fit: cover;" alt="@product.Name">
+                                    @if (!product.IsInStock)
+                                    {
+                                        <div class="position-absolute top-0 end-0 m-3 shadow">
+                                            <span class="badge bg-danger">Sold Out</span>
+                                        </div>
+                                    }
+                                </div>
+
+                                <div class="card-body d-flex flex-column p-4">
+                                    <h6 class="card-title fw-bold text-dark mb-2">@product.Name</h6>
+
+                                    <!-- Stock Status Indicators -->
+                                    <div class="mb-3">
+                                        @if (product.IsInStock)
+                                        {
+                                            <small class="text-success"><i class="bi bi-check-circle-fill me-1"></i> In Stock</small>
+                                        }
+                                        else
+                                        {
+                                            <small class="text-danger"><i class="bi bi-x-circle-fill me-1"></i> Out of Stock</small>
+                                        }
+                                    </div>
+
+                                    <div class="mt-auto">
+                                        <p class="text-primary fs-5 fw-bold mb-3">@product.Price.ToString("C0")</p>
+
+                                        <div class="d-grid gap-2">
+                                            <!-- Add to Cart Button -->
+                                            <button class="btn btn-primary rounded-pill py-2 @(product.IsInStock ? "" : "disabled")"
+                                                    onclick="addToCart(@product.Id)">
+                                                <i class="bi bi-cart-plus me-2"></i> Add to Cart
+                                            </button>
+
+                                            <!-- Details Link -->
+                                            <a asp-action="Details" asp-route-id="@product.Id"
+                                               class="btn btn-outline-dark btn-sm rounded-pill py-2">
+                                                View Details
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+            }
+        </main>
     </div>
-
-
 </div>

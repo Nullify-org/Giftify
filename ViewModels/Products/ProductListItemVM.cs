@@ -1,4 +1,7 @@
-﻿namespace Giftify.ViewModels.Products;
+﻿using Giftify.ViewModels.Categories;
+using Giftify.ViewModels.Occasions;
+
+namespace Giftify.ViewModels.Products;
 
 public class ProductListItemVM
 {

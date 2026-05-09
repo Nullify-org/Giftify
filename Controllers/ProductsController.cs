@@ -10,10 +10,10 @@ public class ProductsController : Controller
     {
         this._productService = productService;
     }
-    public async Task<IActionResult> Index()
+    public async Task<IActionResult> Index(ProductFilterVM filter)
     {
-        IEnumerable<ProductListItemVM> products = await _productService.GetAllProductsForCardsAsync();
-        return View(products);
+        ProductIndexVM productIndex = await _productService.GetFilteredProductsAsync(filter);
+        return View(productIndex);
     }
 
     public async Task<IActionResult> Details(int id)

@@ -57,18 +57,12 @@ namespace Giftify
             builder.Services.AddScoped<IOrderRepository, OrderRepository>();
             builder.Services.AddScoped<ICartRepository, CartRepository>();
             builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
-<<<<<<< HEAD
             builder.Services.AddScoped<IOccasionRepository, OccasionRepository>();
-=======
->>>>>>> 1e4876017e0475229b7cb5fd3cb178f81b5991d5
             builder.Services.AddScoped<IProductService, ProductService>();
             builder.Services.AddScoped<IOrderService, OrderService>();
             builder.Services.AddScoped<ICartService, CartService>();
             builder.Services.AddScoped<ICategoryService, CategoryService>();
-<<<<<<< HEAD
             builder.Services.AddScoped<IOccasionService, OccasionService>();
-=======
->>>>>>> 1e4876017e0475229b7cb5fd3cb178f81b5991d5
             builder.Services.AddControllersWithViews();
 
             var app = builder.Build();

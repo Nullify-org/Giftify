@@ -87,9 +87,15 @@ namespace Giftify
 
 
 
-            // made by mohamed mostafa data seeding
+            // Auto-migrate + seed on startup
             using (var scope = app.Services.CreateScope())
             {
+                var db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+
+                var pending = db.Database.GetPendingMigrations();
+                if (pending.Any())
+                    db.Database.Migrate();
+
                 var seeder = scope.ServiceProvider.GetRequiredService<ApplicationDbSeeder>();
                 seeder.SeedAsync().GetAwaiter().GetResult();
             }

@@ -23,7 +23,6 @@ public class HomeCategoryCardVM
     public int Id { get; set; }
     public string Name { get; set; } = string.Empty;
     public string? Description { get; set; }
-    // Bootstrap Icons class (used as: <i class="bi @cat.IconClass">)
     public string IconClass { get; set; } = "bi-gift";
     public int ProductCount { get; set; }
     public string GradientFrom { get; set; } = "#0F3D2E";
@@ -35,7 +34,6 @@ public class HomeOccasionBadgeVM
     public int Id { get; set; }
     public string Name { get; set; } = string.Empty;
     public string Emoji { get; set; } = "🎁";
-    // Bootstrap Icons class (used as: <i class="bi @occ.IconClass">)
     public string IconClass { get; set; } = "bi-gift";
     public int GiftCount { get; set; }
     public string GradientFrom { get; set; } = "#0F3D2E";

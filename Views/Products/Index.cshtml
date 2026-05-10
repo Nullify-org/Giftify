@@ -1,4 +1,4 @@
-﻿@using Giftify.ViewModels.Products
+@using Giftify.ViewModels.Products
 @model ProductIndexVM
 
 @{
@@ -141,12 +141,16 @@
                                         </div>
 
                                         <div class="d-grid gap-2">
-                                            <button class="btn btn-dark rounded-pill py-2 @(product.IsInStock ? "" : "disabled")">
+                                            @* data-product-id is required for site.js click handler *@
+                                            <button class="btn btn-dark rounded-pill py-2 @(product.IsInStock ? "" : "disabled")"
+                                                    data-product-id="@product.Id"
+                                                    @(product.IsInStock ? "" : "disabled")>
                                                 <i class="bi bi-cart-plus me-2"></i> Add to Cart
                                             </button>
                                             <a asp-action="Details" asp-route-id="@product.Id"
                                                class="btn btn-outline-secondary btn-sm rounded-pill border-0">
-                                                View Details </a>
+                                                View Details
+                                            </a>
                                         </div>
                                     </div>
                                 </div>

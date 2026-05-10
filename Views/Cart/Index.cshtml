@@ -1,0 +1,554 @@
+@using Giftify.ViewModels.Cart
+@model CartVM
+
+@{
+    ViewData["Title"] = "My Cart";
+}
+
+@section Styles {
+<style>
+    .cart-page {
+        max-width: 1100px;
+        margin: 0 auto;
+        padding: 1.5rem 1rem 3rem;
+    }
+
+    .cart-page h2 {
+        font-size: 1.6rem;
+        font-weight: 700;
+        color: #1C1C1A;
+        margin-bottom: 1.75rem;
+        display: flex;
+        align-items: center;
+        gap: .5rem;
+    }
+
+    /* ── Layout ── */
+    .cart-layout {
+        display: grid;
+        grid-template-columns: 1fr 320px;
+        gap: 1.75rem;
+        align-items: start;
+    }
+
+    /* ── Items card ── */
+    .cart-card {
+        background: #fff;
+        border: 1px solid #E2DDD4;
+        border-radius: 14px;
+        overflow: hidden;
+        box-shadow: 0 2px 12px rgba(0,0,0,.06);
+    }
+
+    .cart-item {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        padding: 1.1rem 1.25rem;
+        border-bottom: 1px solid #f0ece4;
+        transition: background .15s;
+    }
+    .cart-item:last-child { border-bottom: none; }
+    .cart-item:hover { background: #FAFAF7; }
+
+    .cart-item-img {
+        width: 82px;
+        height: 82px;
+        border-radius: 10px;
+        object-fit: cover;
+        flex-shrink: 0;
+        border: 1px solid #E2DDD4;
+    }
+
+    .cart-item-info { flex: 1; min-width: 0; }
+    .cart-item-info h6 {
+        font-weight: 700;
+        font-size: 14px;
+        color: #1C1C1A;
+        margin: 0 0 .2rem;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+    .cart-item-info .unit-price {
+        font-size: 12px;
+        color: #8A8A7A;
+    }
+
+    .badge-danger {
+        display: inline-block;
+        margin-top: .25rem;
+        padding: .18rem .55rem;
+        border-radius: 50px;
+        font-size: 11px;
+        font-weight: 700;
+        background: #fef2f2;
+        color: #dc2626;
+        border: 1px solid #fecaca;
+    }
+    .badge-warning {
+        display: inline-block;
+        margin-top: .25rem;
+        padding: .18rem .55rem;
+        border-radius: 50px;
+        font-size: 11px;
+        font-weight: 700;
+        background: #fffbeb;
+        color: #92400e;
+        border: 1px solid #fde68a;
+    }
+
+    /* qty controls */
+    .qty-controls {
+        display: flex;
+        align-items: center;
+        border: 1px solid #E2DDD4;
+        border-radius: 8px;
+        overflow: hidden;
+        flex-shrink: 0;
+    }
+    .qty-btn {
+        width: 30px;
+        height: 34px;
+        background: #F7F4EE;
+        border: none;
+        font-size: 16px;
+        color: #4A4A42;
+        cursor: pointer;
+        transition: background .15s;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-family: inherit;
+    }
+    .qty-btn:hover:not(:disabled) { background: #E2DDD4; }
+    .qty-btn:disabled { opacity: .4; cursor: not-allowed; }
+    .qty-input {
+        width: 40px;
+        height: 34px;
+        border: none;
+        border-left: 1px solid #E2DDD4;
+        border-right: 1px solid #E2DDD4;
+        text-align: center;
+        font-size: 13px;
+        font-weight: 700;
+        color: #1C1C1A;
+        background: #fff;
+        outline: none;
+        -moz-appearance: textfield;
+    }
+    .qty-input::-webkit-outer-spin-button,
+    .qty-input::-webkit-inner-spin-button { -webkit-appearance: none; }
+    .qty-input:disabled { background: #F7F4EE; opacity: .5; }
+
+    /* line total */
+    .line-total {
+        font-weight: 700;
+        font-size: 14px;
+        color: #1C1C1A;
+        min-width: 100px;
+        text-align: right;
+        flex-shrink: 0;
+    }
+
+    /* remove button */
+    .btn-remove {
+        width: 34px;
+        height: 34px;
+        border-radius: 50%;
+        background: #fef2f2;
+        border: 1px solid #fecaca;
+        color: #dc2626;
+        font-size: 14px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+        cursor: pointer;
+        transition: all .2s;
+        line-height: 1;
+    }
+    .btn-remove:hover { background: #dc2626; color: #fff; border-color: #dc2626; }
+
+    /* ── Bottom actions ── */
+    .cart-actions {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-top: 1rem;
+    }
+    .btn-continue {
+        display: inline-flex;
+        align-items: center;
+        gap: .35rem;
+        font-size: 13px;
+        font-weight: 500;
+        color: #4A4A42;
+        padding: .5rem 1.1rem;
+        border-radius: 8px;
+        border: 1px solid #E2DDD4;
+        background: #fff;
+        transition: all .2s;
+        text-decoration: none;
+    }
+    .btn-continue:hover { border-color: #0F3D2E; color: #0F3D2E; }
+
+    .btn-clear {
+        display: inline-flex;
+        align-items: center;
+        gap: .35rem;
+        font-size: 13px;
+        font-weight: 500;
+        color: #dc2626;
+        padding: .5rem 1.1rem;
+        border-radius: 8px;
+        border: 1px solid #fecaca;
+        background: #fef2f2;
+        cursor: pointer;
+        transition: all .2s;
+        font-family: inherit;
+    }
+    .btn-clear:hover { background: #dc2626; color: #fff; border-color: #dc2626; }
+
+    /* ── Order Summary ── */
+    .summary-card {
+        background: #fff;
+        border: 1px solid #E2DDD4;
+        border-radius: 14px;
+        box-shadow: 0 2px 12px rgba(0,0,0,.06);
+        padding: 1.5rem;
+        position: sticky;
+        top: 80px;
+    }
+    .summary-card h5 {
+        font-size: 1rem;
+        font-weight: 700;
+        color: #1C1C1A;
+        margin-bottom: 1.25rem;
+    }
+    .summary-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: .65rem;
+        font-size: 13px;
+    }
+    .summary-row .label { color: #8A8A7A; }
+    .summary-row .value { font-weight: 600; color: #1C1C1A; }
+    .summary-divider { border: none; border-top: 1px solid #E2DDD4; margin: .875rem 0; }
+    .summary-total {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1.25rem;
+        font-size: 1rem;
+        font-weight: 700;
+        color: #1C1C1A;
+    }
+    .btn-checkout {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: .45rem;
+        width: 100%;
+        padding: .8rem;
+        background: #0F3D2E;
+        color: #fff;
+        border: none;
+        border-radius: 8px;
+        font-size: 14px;
+        font-weight: 700;
+        cursor: pointer;
+        transition: background .2s;
+        text-decoration: none;
+        font-family: inherit;
+    }
+    .btn-checkout:hover { background: #1a5c42; color: #fff; }
+
+    .secure-note {
+        text-align: center;
+        font-size: 11px;
+        color: #8A8A7A;
+        margin-top: .75rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: .3rem;
+    }
+
+    /* ── Empty state ── */
+    .cart-empty {
+        text-align: center;
+        padding: 5rem 2rem;
+    }
+    .cart-empty i { font-size: 3.5rem; color: #C8C2B4; }
+    .cart-empty h4 {
+        font-size: 1.2rem;
+        font-weight: 600;
+        color: #8A8A7A;
+        margin: 1rem 0 1.5rem;
+    }
+    .btn-shop-now {
+        display: inline-flex;
+        align-items: center;
+        gap: .4rem;
+        padding: .7rem 1.75rem;
+        background: #0F3D2E;
+        color: #fff;
+        border-radius: 50px;
+        font-weight: 700;
+        font-size: 14px;
+        text-decoration: none;
+        transition: background .2s;
+    }
+    .btn-shop-now:hover { background: #1a5c42; color: #fff; }
+
+    @@media (max-width: 860px) {
+        .cart-layout { grid-template-columns: 1fr; }
+        .summary-card { position: static; }
+    }
+    @@media (max-width: 560px) {
+        .cart-item { flex-wrap: wrap; }
+        .cart-item-img { width: 60px; height: 60px; }
+        .line-total { display: none; }
+        .cart-page { padding: 1rem .75rem 3rem; }
+    }
+</style>
+}
+
+<div class="cart-page">
+    <h2><i class="bi bi-cart3"></i> My Cart</h2>
+
+    @if (Model.IsEmpty)
+    {
+        <div class="cart-empty">
+            <i class="bi bi-cart-x"></i>
+            <h4>Your cart is empty</h4>
+            <a asp-controller="Products" asp-action="Index" class="btn-shop-now">
+                <i class="bi bi-bag-heart"></i> Shop Now
+            </a>
+        </div>
+    }
+    else
+    {
+        <div class="cart-layout">
+
+            @* ── Cart Items ── *@
+            <div>
+                <div class="cart-card">
+                    @foreach (var item in Model.Items)
+                    {
+                        <div class="cart-item"
+                             data-cart-item-id="@item.CartItemId"
+                             data-unit-price="@item.UnitPrice"
+                             data-stock="@item.Stock">
+
+                            <img src="@item.ImageUrl"
+                                 alt="@item.ProductName"
+                                 class="cart-item-img"
+                                 onerror="this.src='/images/default-product.png'">
+
+                            <div class="cart-item-info">
+                                <h6>@item.ProductName</h6>
+                                <span class="unit-price">@item.UnitPrice.ToString("N0") EGP each</span>
+                                @if (item.Stock == 0)
+                                {
+                                    <div><span class="badge-danger">Out of stock</span></div>
+                                }
+                                else if (item.Stock < item.Quantity)
+                                {
+                                    <div><span class="badge-warning">Only @item.Stock left</span></div>
+                                }
+                            </div>
+
+                            @* Quantity controls *@
+                            <div class="qty-controls">
+                                <button class="qty-btn qty-decrease" type="button"
+                                        @(item.Stock == 0 ? "disabled" : "")>−</button>
+                                <input type="number"
+                                       class="qty-input"
+                                       value="@item.Quantity"
+                                       min="1"
+                                       max="@item.Stock"
+                                       @(item.Stock == 0 ? "disabled" : "")>
+                                <button class="qty-btn qty-increase" type="button"
+                                        @(item.Stock == 0 ? "disabled" : "")>+</button>
+                            </div>
+
+                            @* Line total *@
+                            <span class="line-total">@item.LineTotal.ToString("N0") EGP</span>
+
+                            @* Remove *@
+                            <button class="btn-remove" title="Remove item">
+                                <i class="bi bi-trash3"></i>
+                            </button>
+
+                        </div>
+                    }
+                </div>
+
+                <div class="cart-actions">
+                    <a asp-controller="Products" asp-action="Index" class="btn-continue">
+                        <i class="bi bi-arrow-left"></i> Continue Shopping
+                    </a>
+                    <button id="btn-clear-cart" class="btn-clear">
+                        <i class="bi bi-trash"></i> Clear Cart
+                    </button>
+                </div>
+            </div>
+
+            @* ── Order Summary ── *@
+            <div class="summary-card">
+                <h5>Order Summary</h5>
+
+                <div class="summary-row">
+                    <span class="label">Subtotal (<span id="total-items">@Model.TotalItems</span> items)</span>
+                    <span class="value" id="summary-subtotal">@Model.Subtotal.ToString("N0") EGP</span>
+                </div>
+                <div class="summary-row">
+                    <span class="label">Shipping</span>
+                    <span class="value" id="summary-shipping">
+                        @(Model.ShippingEstimate == 0 ? "Free" : Model.ShippingEstimate.ToString("N0") + " EGP")
+                    </span>
+                </div>
+
+                <hr class="summary-divider">
+
+                <div class="summary-total">
+                    <span>Total</span>
+                    <span id="summary-total">@Model.GrandTotal.ToString("N0") EGP</span>
+                </div>
+
+                <a href="#" class="btn-checkout">
+                    <i class="bi bi-lock"></i> Proceed to Checkout
+                </a>
+
+                <p class="secure-note">
+                    <i class="bi bi-shield-check"></i> Secure checkout
+                </p>
+            </div>
+
+        </div>
+    }
+</div>
+
+@section Scripts {
+<script>
+    // csrf token from the meta tag in _Layout
+    const csrfToken = document.querySelector('meta[name="csrf-token"]')?.content;
+
+    // ── Generic POST helper ──────────────────────────────────────────────────
+    function cartPost(url, body) {
+        return fetch(url, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'RequestVerificationToken': csrfToken
+            },
+            body: JSON.stringify(body)
+        }).then(async r => {
+            const data = await r.json();
+            if (!r.ok) throw new Error(data.message || 'Request failed');
+            return data;
+        });
+    }
+
+    // ── POST helper for no-body actions (Clear) ──────────────────────────────
+    function cartPostNoBody(url) {
+        return fetch(url, {
+            method: 'POST',
+            headers: { 'RequestVerificationToken': csrfToken }
+        }).then(async r => {
+            const data = await r.json();
+            if (!r.ok) throw new Error(data.message || 'Request failed');
+            return data;
+        });
+    }
+
+    // ── Recalculate summary panel ────────────────────────────────────────────
+    function recalcSummary() {
+        let subtotal = 0, totalItems = 0;
+        document.querySelectorAll('.cart-item').forEach(row => {
+            const qty       = parseInt(row.querySelector('.qty-input').value) || 0;
+            const unitPrice = parseFloat(row.dataset.unitPrice) || 0;
+            subtotal   += qty * unitPrice;
+            totalItems += qty;
+        });
+        const shipping   = subtotal >= 500 ? 0 : 50;
+        const grandTotal = subtotal + shipping;
+        document.getElementById('summary-subtotal').textContent = subtotal.toLocaleString('en-EG') + ' EGP';
+        document.getElementById('summary-shipping').textContent = shipping === 0 ? 'Free' : shipping.toLocaleString('en-EG') + ' EGP';
+        document.getElementById('summary-total').textContent    = grandTotal.toLocaleString('en-EG') + ' EGP';
+        document.getElementById('total-items').textContent      = totalItems;
+    }
+
+    // ── Wire up each cart item row ───────────────────────────────────────────
+    document.querySelectorAll('.cart-item').forEach(row => {
+        const cartItemId = parseInt(row.dataset.cartItemId);
+        const input      = row.querySelector('.qty-input');
+        const lineTotal  = row.querySelector('.line-total');
+        const unitPrice  = parseFloat(row.dataset.unitPrice);
+        const stock      = parseInt(row.dataset.stock);
+
+        input.dataset.lastGood = input.value;
+
+        function setQty(newQty) {
+            if (stock === 0) {
+                showToast('This item is out of stock.', 'error');
+                return;
+            }
+            if (newQty > stock) {
+                showToast(`Only ${stock} unit(s) available for this item.`, 'error');
+                newQty = stock;
+            }
+            newQty = Math.max(1, newQty);
+            input.value = newQty;
+            lineTotal.textContent = (newQty * unitPrice).toLocaleString('en-EG') + ' EGP';
+            recalcSummary();
+
+            cartPost('/Cart/UpdateQuantity', { cartItemId, newQuantity: newQty })
+                .then(data => {
+                    updateCartBadge(data.cartCount);
+                    input.dataset.lastGood = newQty;
+                })
+                .catch(err => {
+                    showToast(err.message || 'Could not update quantity.', 'error');
+                    const reverted = parseInt(input.dataset.lastGood);
+                    input.value = reverted;
+                    lineTotal.textContent = (reverted * unitPrice).toLocaleString('en-EG') + ' EGP';
+                    recalcSummary();
+                });
+        }
+
+        row.querySelector('.qty-decrease').addEventListener('click', () =>
+            setQty(parseInt(input.value) - 1));
+
+        row.querySelector('.qty-increase').addEventListener('click', () =>
+            setQty(parseInt(input.value) + 1));
+
+        input.addEventListener('change', () =>
+            setQty(parseInt(input.value)));
+
+        // ── Remove item ──────────────────────────────────────────────────────
+        row.querySelector('.btn-remove').addEventListener('click', () => {
+            cartPost('/Cart/Remove', { cartItemId })
+                .then(data => {
+                    updateCartBadge(data.cartCount);
+                    row.remove();
+                    recalcSummary();
+                    showToast('Item removed from cart.');
+                    if (!document.querySelector('.cart-item')) location.reload();
+                })
+                .catch(err => showToast(err.message || 'Could not remove item.', 'error'));
+        });
+    });
+
+    // ── Clear cart ───────────────────────────────────────────────────────────
+    document.getElementById('btn-clear-cart')?.addEventListener('click', () => {
+        if (!confirm('Clear your entire cart?')) return;
+        cartPostNoBody('/Cart/Clear')
+            .then(() => { updateCartBadge(0); location.reload(); })
+            .catch(err => showToast(err.message || 'Could not clear cart.', 'error'));
+    });
+</script>
+}

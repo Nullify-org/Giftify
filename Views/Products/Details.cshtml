@@ -1,25 +1,33 @@
-﻿@using Giftify.ViewModels.Products
+@using Giftify.ViewModels.Products
 
 @model ProductDetailsVM
 
 @{
-    ViewData["Title"] = "Details";
+    ViewData["Title"] = Model.Name;
 }
 
 <div class="container mt-5">
     <nav aria-label="breadcrumb">
         <ol class="breadcrumb">
-            <li class="breadcrumb-item"><a asp-action="Index">Products</a></li>
-            <li class="breadcrumb-item active">@Model.Category.Name</li>
+            <li class="breadcrumb-item"><a asp-controller="Products" asp-action="Index">Products</a></li>
+            <li class="breadcrumb-item">
+                <a asp-controller="Products" asp-action="Index" asp-route-categoryId="@Model.Category?.Id">
+                    @Model.Category?.Name
+                </a>
+            </li>
+            <li class="breadcrumb-item active">@Model.Name</li>
         </ol>
     </nav>
 
     <div class="row">
         <div class="col-md-6">
             <div class="main-image mb-3">
-                @if (Model.ImageUrls.Any())
+                @if (Model.ImageUrls != null && Model.ImageUrls.Any())
                 {
-                    <img src="@Model.ImageUrls[0]" id="mainImg" class="img-fluid rounded shadow w-100" style="height: 450px; object-fit: cover;" alt="@Model.Name">
+                    <img src="@Model.ImageUrls[0]" id="mainImg"
+                         class="img-fluid rounded shadow w-100"
+                         style="height:450px; object-fit:cover;"
+                         alt="@Model.Name">
                 }
                 else
                 {
@@ -27,10 +35,12 @@
                 }
             </div>
 
-            <div class="d-flex gap-2">
-                @foreach (var imgUrl in Model.ImageUrls)
+            <div class="d-flex gap-2 flex-wrap">
+                @foreach (var imgUrl in Model.ImageUrls ?? new List<string>())
                 {
-                    <img src="@imgUrl" class="img-thumbnail" style="width: 80px; height: 80px; cursor: pointer; object-fit: cover;"
+                    <img src="@imgUrl"
+                         class="img-thumbnail"
+                         style="width:80px; height:80px; cursor:pointer; object-fit:cover;"
                          onclick="document.getElementById('mainImg').src='@imgUrl'">
                 }
             </div>
@@ -41,15 +51,17 @@
                 <h1 class="display-5 fw-bold">@Model.Name</h1>
 
                 <div class="mb-3">
-                    @foreach (var occasion in Model.Occasions)
+                    @foreach (var occasion in Model.Occasions ?? new List<Giftify.ViewModels.Occasions.OccasionVM>())
                     {
-                        <a asp-action="Index" asp-route-occasionId="@occasion.Id" class="badge rounded-pill bg-primary me-1 text-decoration-none">
+                        <a asp-controller="Products" asp-action="Index"
+                           asp-route-occasionId="@occasion.Id"
+                           class="badge rounded-pill bg-primary me-1 text-decoration-none">
                             @occasion.Name
                         </a>
                     }
                 </div>
 
-                <h3 class="text-success fw-bold mb-3">@Model.Price.ToString("C2")</h3>
+                <h3 class="text-success fw-bold mb-3">@Model.Price.ToString("N0") EGP</h3>
 
                 <hr>
 
@@ -60,7 +72,9 @@
 
                 <div class="mb-4">
                     <strong>Category:</strong>
-                    <a asp-action="Index" asp-route-categoryId="@Model.Category.Id" class="text-decoration-none">@Model.Category.Name</a>
+                    <a asp-controller="Products" asp-action="Index"
+                       asp-route-categoryId="@Model.Category?.Id"
+                       class="text-decoration-none">@Model.Category?.Name</a>
                     <br>
                     <strong>Availability:</strong>
                     @if (Model.StockQuantity > 0)
@@ -73,16 +87,28 @@
                     }
                 </div>
 
-                <div class="d-grid gap-2 d-md-block">
-                    <button class="btn btn-dark btn-lg px-5" type="button">
+                @* Quantity selector + Add to Cart *@
+                <div class="d-flex align-items-center gap-3 mb-3">
+                    <div class="input-group" style="width:130px;">
+                        <button class="btn btn-outline-secondary" type="button"
+                                onclick="changeQty(-1)">−</button>
+                        <input type="number" id="qty-input" class="form-control text-center"
+                               value="1" min="1" max="100">
+                        <button class="btn btn-outline-secondary" type="button"
+                                onclick="changeQty(1)">+</button>
+                    </div>
+
+                    <button class="btn btn-dark btn-lg px-5"
+                            data-product-id="@Model.Id"
+                            data-use-qty="true"
+                            @(Model.StockQuantity <= 0 ? "disabled" : "")>
                         <i class="bi bi-cart-plus"></i> Add to Cart
                     </button>
-
                 </div>
 
                 <div class="mt-4">
-                    <a asp-action="Index" class="text-decoration-none text-muted">
-                        <i class="bi bi-arrow-left"></i> Back to Products Page
+                    <a asp-controller="Products" asp-action="Index" class="text-decoration-none text-muted">
+                        <i class="bi bi-arrow-left"></i> Back to Products
                     </a>
                 </div>
             </div>
@@ -92,8 +118,34 @@
 
 @section Scripts {
     <script>
-        function changeImage(url) {
-            document.getElementById('mainImg').src = url;
+        function changeQty(delta) {
+            const input = document.getElementById('qty-input');
+            const newVal = Math.max(1, Math.min(100, parseInt(input.value || 1) + delta));
+            input.value = newVal;
         }
+
+        // Override the global click handler for the details-page button
+        // so it reads the qty input instead of defaulting to 1
+        document.addEventListener('DOMContentLoaded', function () {
+            document.body.addEventListener('click', function (e) {
+                const btn = e.target.closest('[data-use-qty="true"]');
+                if (!btn) return;
+                e.stopImmediatePropagation(); // prevent double-fire from site.js
+
+                const productId = parseInt(btn.dataset.productId);
+                const quantity  = parseInt(document.getElementById('qty-input')?.value || '1');
+
+                const originalHtml = btn.innerHTML;
+                btn.disabled = true;
+                btn.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span> Adding…';
+
+                addToCart(productId, quantity);
+
+                setTimeout(() => {
+                    btn.disabled = false;
+                    btn.innerHTML = originalHtml;
+                }, 800);
+            }, true); // capture phase so it runs before site.js
+        });
     </script>
 }

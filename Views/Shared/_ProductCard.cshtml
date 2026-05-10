@@ -1,0 +1,95 @@
+@using Giftify.ViewModels.Home
+@model HomeProductCardVM
+
+<div class="gfy-product-card card h-100 border-0 rounded-4 overflow-hidden shadow-sm">
+
+    @* ── Image ──────────────────────────────────────────────────── *@
+    <div class="gfy-product-card__img-wrap position-relative">
+        <a asp-controller="Products" asp-action="Details" asp-route-id="@Model.Id">
+            <img src="@Model.ImageUrl"
+                 class="gfy-product-card__img card-img-top"
+                 alt="@Model.Name"
+                 onerror="this.src='/images/default-product.png'">
+        </a>
+
+        @* Wishlist button *@
+        <button class="gfy-product-card__wishlist btn btn-light btn-sm rounded-circle shadow-sm"
+                aria-label="Add to wishlist">
+            <i class="bi bi-heart"></i>
+        </button>
+
+        @* Out-of-stock badge *@
+        @if (!Model.IsInStock)
+        {
+            <span class="badge bg-danger position-absolute top-0 start-0 m-3 rounded-pill">
+                Out of stock
+            </span>
+        }
+    </div>
+
+    @* ── Body ───────────────────────────────────────────────────── *@
+    <div class="card-body p-3 d-flex flex-column">
+
+        @if (!string.IsNullOrEmpty(Model.CategoryName))
+        {
+            <span class="gfy-product-card__cat text-muted small mb-1">
+                <i class="bi bi-tag-fill me-1"></i>@Model.CategoryName
+            </span>
+        }
+
+        <h6 class="gfy-product-card__name fw-bold text-dark mb-2 text-truncate">
+            <a asp-controller="Products" asp-action="Details" asp-route-id="@Model.Id"
+               class="text-dark text-decoration-none stretched-link-exclude">
+                @Model.Name
+            </a>
+        </h6>
+
+        <div class="mt-auto">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <span class="gfy-product-card__price fw-bold fs-5">
+                    @Model.Price.ToString("N0") EGP
+                </span>
+                @if (Model.IsInStock)
+                {
+                    <span class="badge rounded-pill bg-success-subtle text-success small">In stock</span>
+                }
+            </div>
+
+            <div class="d-grid gap-2">
+                <button class="btn btn-dark rounded-pill btn-sm py-2 gfy-product-card__add-btn
+                               @(Model.IsInStock ? "" : "disabled")"
+                        data-product-id="@Model.Id"
+                        @(Model.IsInStock ? "" : "disabled")>
+                    <i class="bi bi-cart-plus me-1"></i> Add to Cart
+                </button>
+
+                <a asp-controller="Products" asp-action="Details" asp-route-id="@Model.Id"
+                   class="btn btn-outline-secondary btn-sm rounded-pill border-0">
+                    View Details
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+@* Card styles are scoped here so the partial is truly self-contained *@
+<style>
+.gfy-product-card { transition:transform .18s, box-shadow .18s; }
+.gfy-product-card:hover { transform:translateY(-4px); box-shadow:0 12px 32px rgba(0,0,0,.1) !important; }
+.gfy-product-card__img-wrap { overflow:hidden; }
+.gfy-product-card__img {
+    height:220px; object-fit:cover; width:100%;
+    transition:transform .3s ease;
+}
+.gfy-product-card:hover .gfy-product-card__img { transform:scale(1.04); }
+.gfy-product-card__wishlist {
+    position:absolute; top:10px; right:10px;
+    width:34px; height:34px; padding:0;
+    display:flex; align-items:center; justify-content:center;
+    transition:all .15s;
+}
+.gfy-product-card__wishlist:hover { background:#1a1a1a; color:#fff; }
+.gfy-product-card__cat { font-size:.75rem; }
+.gfy-product-card__price { color:#1a1a1a; }
+.gfy-product-card__add-btn { font-size:.85rem; }
+</style>

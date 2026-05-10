@@ -1,8 +1,217 @@
-﻿@{
-    ViewData["Title"] = "Home Page";
+@using Giftify.ViewModels.Home
+@model HomeIndexVM
+
+@{
+    ViewData["Title"] = "Giftify — Find the Perfect Gift";
 }
 
-@* //  Made By Nour Eddine Maher
- *@<div class="text-center">
-    <h1 class="display-4">Welcome Giftify (Nour Eddine Maher)</h1>
-</div>git 
+@* ═══════════════════════════  HERO  ═══════════════════════════ *@
+<section class="gfy-hero position-relative overflow-hidden">
+    <div class="gfy-hero__overlay"></div>
+    <div class="container-fluid px-lg-5 position-relative z-1">
+        <div class="row align-items-center py-5" style="min-height:60vh;">
+            <div class="col-lg-6 col-xl-5 py-5">
+                <h1 class="gfy-hero__headline fw-bold lh-sm mb-3" style="font-size:clamp(2rem,4vw,3.2rem);">
+                    @Model.Hero.Headline
+                </h1>
+                <p class="gfy-hero__sub text-muted fs-5 mb-4">
+                    @Model.Hero.SubHeadline
+                </p>
+
+                <div class="d-flex flex-wrap gap-3 mb-5">
+                    <a href="@Model.Hero.PrimaryCtaUrl"
+                       class="btn btn-dark btn-lg rounded-pill px-5 py-3 gfy-btn-primary">
+                        <i class="bi bi-bag-heart-fill me-2"></i>@Model.Hero.PrimaryCtaText
+                    </a>
+                    <a href="@Model.Hero.SecondaryCtaUrl"
+                       class="btn btn-outline-dark btn-lg rounded-pill px-4 py-3">
+                        @Model.Hero.SecondaryCtaText
+                        <i class="bi bi-arrow-right ms-1"></i>
+                    </a>
+                </div>
+
+                <div class="d-flex flex-wrap gap-3">
+                    @foreach (var badge in Model.Hero.TrustBadges)
+                    {
+                        <span class="gfy-trust-badge">
+                            <i class="bi bi-check-circle-fill me-1 text-success"></i>@badge
+                        </span>
+                    }
+                </div>
+            </div>
+
+            <div class="col-lg-6 d-none d-lg-flex justify-content-center align-items-center py-5">
+                <div class="gfy-hero__img-wrap">
+                    <img src="@Model.Hero.HeroImageUrl"
+                         alt="Giftify hero"
+                         class="gfy-hero__img img-fluid rounded-4 shadow-lg"
+                         onerror="this.style.display='none'">
+                    <div class="gfy-hero__float-card gfy-hero__float-card--top shadow-sm">
+                        <i class="bi bi-gift-fill text-danger me-2"></i>
+                        <span class="small fw-semibold">10 000+ gifts available</span>
+                    </div>
+                    <div class="gfy-hero__float-card gfy-hero__float-card--bottom shadow-sm">
+                        <i class="bi bi-star-fill text-warning me-2"></i>
+                        <span class="small fw-semibold">4.9 / 5 customer rating</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+@if (Model.Occasions.Any())
+{
+    <section class="py-4 border-bottom bg-light">
+        <div class="container-fluid px-lg-5">
+            <div class="d-flex flex-wrap gap-2 justify-content-center">
+                @foreach (var occ in Model.Occasions)
+                {
+                    <a href="/Products?OccasionIds=@occ.Id"
+                       class="btn btn-outline-secondary btn-sm rounded-pill px-3 gfy-occ-pill">
+                        <i class="bi @occ.IconClass me-1"></i>@occ.Name
+                    </a>
+                }
+            </div>
+        </div>
+    </section>
+}
+
+@* ═══════════════════════════  FEATURED CATEGORIES  ═══════════════════════════ *@
+@if (Model.FeaturedCategories.Any())
+{
+    <section class="py-5">
+        <div class="container-fluid px-lg-5">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <div>
+                    <h2 class="fw-bold mb-1">Shop by Category</h2>
+                    <p class="text-muted small mb-0">Browse our handpicked collections</p>
+                </div>
+                <a href="/Products" class="btn btn-link text-dark text-decoration-none fw-semibold">
+                    View all <i class="bi bi-arrow-right"></i>
+                </a>
+            </div>
+            <div class="row row-cols-2 row-cols-md-3 row-cols-lg-4 row-cols-xl-5 g-3">
+                @foreach (var cat in Model.FeaturedCategories)
+                {
+                    <div class="col">
+                        <a href="/Category/@cat.Id" class="text-decoration-none">
+                            <div class="gfy-cat-tile text-center p-4 rounded-4 h-100">
+                                <div class="gfy-cat-tile__icon mx-auto mb-3">
+                                    <i class="bi @cat.IconClass fs-2"></i>
+                                </div>
+                                <h6 class="fw-bold text-dark mb-1">@cat.Name</h6>
+                                <span class="small text-muted">@cat.ProductCount items</span>
+                            </div>
+                        </a>
+                    </div>
+                }
+            </div>
+        </div>
+    </section>
+}
+
+@* ═══════════════════════════  FEATURED PRODUCTS  ═══════════════════════════ *@
+@if (Model.FeaturedProducts.Any())
+{
+    <section class="py-5 bg-light">
+        <div class="container-fluid px-lg-5">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <div>
+                    <h2 class="fw-bold mb-1">Featured Gifts</h2>
+                    <p class="text-muted small mb-0">Our most-loved picks right now</p>
+                </div>
+                <a href="/Products" class="btn btn-link text-dark text-decoration-none fw-semibold">
+                    View all <i class="bi bi-arrow-right"></i>
+                </a>
+            </div>
+            <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-xl-4 g-4">
+                @foreach (var product in Model.FeaturedProducts)
+                {
+                    <div class="col">
+                        @await Html.PartialAsync("_ProductCard", product)
+                    </div>
+                }
+            </div>
+        </div>
+    </section>
+}
+
+@* ═══════════════════════════  WHY GIFTIFY STRIP  ═══════════════════════════ *@
+<section class="py-5">
+    <div class="container-fluid px-lg-5">
+        <div class="row g-4 text-center">
+            <div class="col-6 col-md-3">
+                <div class="gfy-why-card p-4 rounded-4 h-100">
+                    <i class="bi bi-truck fs-2 text-dark mb-3 d-block"></i>
+                    <h6 class="fw-bold">Free Delivery</h6>
+                    <p class="small text-muted mb-0">On orders over 500 EGP</p>
+                </div>
+            </div>
+            <div class="col-6 col-md-3">
+                <div class="gfy-why-card p-4 rounded-4 h-100">
+                    <i class="bi bi-shield-check fs-2 text-dark mb-3 d-block"></i>
+                    <h6 class="fw-bold">Secure Payments</h6>
+                    <p class="small text-muted mb-0">100% protected checkout</p>
+                </div>
+            </div>
+            <div class="col-6 col-md-3">
+                <div class="gfy-why-card p-4 rounded-4 h-100">
+                    <i class="bi bi-arrow-counterclockwise fs-2 text-dark mb-3 d-block"></i>
+                    <h6 class="fw-bold">Easy Returns</h6>
+                    <p class="small text-muted mb-0">30-day hassle-free policy</p>
+                </div>
+            </div>
+            <div class="col-6 col-md-3">
+                <div class="gfy-why-card p-4 rounded-4 h-100">
+                    <i class="bi bi-headset fs-2 text-dark mb-3 d-block"></i>
+                    <h6 class="fw-bold">24 / 7 Support</h6>
+                    <p class="small text-muted mb-0">We're always here to help</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+@section Scripts {
+<style>
+.gfy-hero { background: linear-gradient(135deg,#fafafa 0%,#f0ece8 100%); }
+.gfy-hero__overlay {
+    position:absolute; inset:0;
+    background:radial-gradient(ellipse at 70% 50%,rgba(255,220,180,.35) 0%,transparent 65%);
+    pointer-events:none;
+}
+.gfy-hero__headline { color:#1a1a1a; letter-spacing:-.5px; }
+.gfy-hero__sub { max-width:480px; }
+.gfy-btn-primary { background:#1a1a1a; border-color:#1a1a1a; }
+.gfy-btn-primary:hover { background:#333; border-color:#333; transform:translateY(-1px); }
+.gfy-trust-badge {
+    display:inline-flex; align-items:center;
+    background:#fff; border:1px solid #e8e4e0;
+    border-radius:999px; padding:4px 12px;
+    font-size:.8rem; color:#444;
+}
+.gfy-hero__img-wrap { position:relative; max-width:480px; }
+.gfy-hero__img { max-height:440px; object-fit:cover; width:100%; }
+.gfy-hero__float-card {
+    position:absolute; background:#fff; border-radius:12px;
+    padding:10px 16px; display:flex; align-items:center;
+    font-size:.85rem; white-space:nowrap;
+}
+.gfy-hero__float-card--top  { top:-16px; right:-20px; }
+.gfy-hero__float-card--bottom { bottom:24px; left:-20px; }
+.gfy-occ-pill { font-size:.8rem; transition:all .15s; }
+.gfy-occ-pill:hover { background:#1a1a1a; color:#fff; border-color:#1a1a1a; }
+.gfy-cat-tile {
+    background:#fff; border:1px solid #f0ece8;
+    transition:transform .15s, box-shadow .15s; cursor:pointer;
+}
+.gfy-cat-tile:hover { transform:translateY(-4px); box-shadow:0 8px 24px rgba(0,0,0,.08) !important; }
+.gfy-cat-tile__icon {
+    width:56px; height:56px; border-radius:50%;
+    background:#f5f2ef; display:flex;
+    align-items:center; justify-content:center; color:#1a1a1a;
+}
+.gfy-why-card { background:#fff; border:1px solid #f0ece8; }
+</style>
+}

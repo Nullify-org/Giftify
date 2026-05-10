@@ -142,8 +142,9 @@ namespace Giftify.Data.Seeder
                     },
                     ["Smart Lamp"] = new List<string>
                     {
-                        "https://images.unsplash.com/photo-1534189285-0e83d9d4bd7d?w=600",
                         "https://images.unsplash.com/photo-1565814636199-ae8133055c1c?w=600",
+                        "https://images.unsplash.com/photo-1534189285-0e83d9d4bd7d?w=600",
+                        
                         "https://images.unsplash.com/photo-1540932239986-30128078f3c5?w=600"
                     },
                     ["Wireless Charger"] = new List<string>
@@ -184,9 +185,12 @@ namespace Giftify.Data.Seeder
                     },
                     ["Perfume Set"] = new List<string>
                     {
-                        "https://images.unsplash.com/photo-1541643600914-78b084683702?w=600",
+                        
                         "https://images.unsplash.com/photo-1592945403244-b3fbafd7f539?w=600",
-                        "https://images.unsplash.com/photo-1588514912908-b6bb6e6b3c1c?w=600"
+                        "https://images.unsplash.com/photo-1592945403244-b3fbafd7f539?w=600",
+                        "https://images.unsplash.com/photo-1592945403244-b3fbafd7f539?w=600"
+
+                        
                     },
                     ["Silk Scarf"] = new List<string>
                     {
@@ -196,9 +200,9 @@ namespace Giftify.Data.Seeder
                     },
                     ["Leather Wallet"] = new List<string>
                     {
-                        "https://images.unsplash.com/photo-1627123424574-724758594913?w=600",
-                        "https://images.unsplash.com/photo-1517254456976-da9f220e6b7e?w=600",
-                        "https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=600"
+                        "https://i.pinimg.com/1200x/81/00/8a/81008a1b31bff2e7069a82a5f3012b00.jpg",
+                        "https://i.pinimg.com/736x/21/5d/ee/215dee6acef79872489766f340876de6.jpg",
+                        "https://i.pinimg.com/1200x/dc/b3/94/dcb394b7052c4497beb004fba2758ae8.jpg"
                     },
                     ["Sunglasses"] = new List<string>
                     {

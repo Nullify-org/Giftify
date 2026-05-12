@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Giftify.Migrations
 {
     /// <inheritdoc />
-    public partial class intial : Migration
+    public partial class v455 : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)

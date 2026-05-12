@@ -128,7 +128,7 @@
                 @foreach (var product in Model.FeaturedProducts)
                 {
                     <div class="col">
-                        @await Html.PartialAsync("_ProductCard", product)
+                        @await Html.PartialAsync("~/Views/Products/_ProductCard.cshtml", product)
                     </div>
                 }
             </div>

@@ -1,0 +1,124 @@
+@using Giftify.ViewModels.Admin
+@model IEnumerable<AdminUserListVM>
+@{
+    ViewData["Title"] = "Manage Users";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h5 class="fw-bold mb-0" style="color:#1a1a2e;">Users</h5>
+        <span class="text-muted" style="font-size:.83rem;">@Model.Count() registered users</span>
+    </div>
+    <a asp-action="Create" class="btn btn-dark rounded-pill px-4">
+        <i class="bi bi-person-plus me-1"></i> Add User
+    </a>
+</div>
+
+@if (TempData["Success"] is string msg)
+{
+    <div class="alert alert-success alert-dismissible fade show rounded-3 mb-3">
+        <i class="bi bi-check-circle-fill me-2"></i>@msg
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+}
+@if (TempData["Error"] is string err)
+{
+    <div class="alert alert-danger alert-dismissible fade show rounded-3 mb-3">
+        <i class="bi bi-x-circle-fill me-2"></i>@err
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+}
+
+<div class="stat-card">
+    <div class="table-responsive">
+        <table class="table table-hover align-middle mb-0" style="font-size:.9rem;">
+            <thead style="background:#f8f9fc;">
+                <tr>
+                    <th class="border-0 text-muted fw-semibold">User</th>
+                    <th class="border-0 text-muted fw-semibold">Email</th>
+                    <th class="border-0 text-muted fw-semibold">Roles</th>
+                    <th class="border-0 text-muted fw-semibold">Joined</th>
+                    <th class="border-0 text-end"></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var u in Model)
+                {
+                    <tr>
+                        <td>
+                            <div class="d-flex align-items-center gap-2">
+                                <div style="width:34px;height:34px;border-radius:50%;
+                                            background:#1a1a2e;color:#fff;
+                                            display:flex;align-items:center;justify-content:center;
+                                            font-weight:700;font-size:.8rem;flex-shrink:0;">
+                                    @(u.FullName?.Substring(0, 1).ToUpper() ?? "?")
+                                </div>
+                                <div>
+                                    <div class="fw-semibold">@u.FullName</div>
+                                    <div class="text-muted" style="font-size:.78rem;">@@@u.UserName</div>
+                                </div>
+                            </div>
+                        </td>
+                        <td class="text-muted">@u.Email</td>
+                        <td>
+                            @foreach (var role in u.Roles)
+                            {
+                                <span class="badge @(role == "Admin" ? "bg-danger-subtle text-danger" : "bg-primary-subtle text-primary") rounded-pill me-1">
+                                    @role
+                                </span>
+                            }
+                        </td>
+                        <td class="text-muted">@u.CreatedAt.ToString("MMM d, yyyy")</td>
+                        <td class="text-end">
+                            <button type="button"
+                                    class="btn btn-sm btn-outline-danger rounded-pill"
+                                    data-bs-toggle="modal" data-bs-target="#deleteModal"
+                                    data-id="@u.Id" data-name="@u.UserName">
+                                <i class="bi bi-trash"></i>
+                            </button>
+                        </td>
+                    </tr>
+                }
+                @if (!Model.Any())
+                {
+                    <tr><td colspan="5" class="text-center text-muted py-5">No users found.</td></tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- Delete Modal -->
+<div class="modal fade" id="deleteModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content rounded-4 border-0 shadow">
+            <div class="modal-header border-0">
+                <h5 class="modal-title fw-bold">Delete User</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body text-muted">
+                Are you sure you want to delete <strong id="deleteName"></strong>?
+            </div>
+            <div class="modal-footer border-0">
+                <button type="button" class="btn btn-secondary rounded-pill" data-bs-dismiss="modal">Cancel</button>
+                <form id="deleteForm" method="post">
+                    @Html.AntiForgeryToken()
+                    <button type="submit" class="btn btn-danger rounded-pill">
+                        <i class="bi bi-trash me-1"></i> Delete
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        document.getElementById('deleteModal').addEventListener('show.bs.modal', e => {
+            const btn = e.relatedTarget;
+            document.getElementById('deleteName').textContent = btn.dataset.name;
+            document.getElementById('deleteForm').action = `/Admin/Users/Delete/${btn.dataset.id}`;
+        });
+    </script>
+}

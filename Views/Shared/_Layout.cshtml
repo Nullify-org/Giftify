@@ -58,6 +58,7 @@
                                     </a>
                                     <hr />
                                     <form asp-action="Logout" asp-controller="Account" method="post">
+                                        @Html.AntiForgeryToken()
                                         <button type="submit" class="profile-menu-item">
                                             <i class="bi bi-box-arrow-right"></i> Sign out
                                         </button>
@@ -97,6 +98,7 @@
                                 <a asp-controller="Cart" asp-action="Index">My Orders</a>
                                 <a href="#">Profile</a>
                                 <form asp-action="Logout" asp-controller="Account" method="post">
+                                    @Html.AntiForgeryToken()
                                     <button type="submit" class="dropdown-item fw-bold border-0 bg-transparent w-100 text-start px-3 py-2">Sign out</button>
                                 </form>
                             }

@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Giftify.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20260510023618_intial")]
-    partial class intial
+    [Migration("20260510141742_v455")]
+    partial class v455
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

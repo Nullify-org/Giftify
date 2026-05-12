@@ -1,0 +1,557 @@
+@using Giftify.Enums
+@using Giftify.ViewModels.Order
+@model CheckoutVM
+
+@{
+    ViewData["Title"] = "Checkout";
+}
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+<style>
+    :root {
+        --ink: #1a1a2e;
+        --ink-soft: #4a4a6a;
+        --ink-muted: #8888aa;
+        --surface: #f8f7ff;
+        --card-bg: #ffffff;
+        --accent: #6c5ce7;
+        --accent-light: #a29bfe;
+        --accent-glow: rgba(108,92,231,0.15);
+        --success: #00b894;
+        --border: rgba(108,92,231,0.15);
+        --shadow-sm: 0 2px 12px rgba(108,92,231,0.08);
+        --shadow-md: 0 8px 32px rgba(108,92,231,0.12);
+        --radius: 16px;
+        --radius-sm: 10px;
+    }
+
+    body { background: var(--surface); font-family: 'DM Sans', sans-serif; color: var(--ink); }
+
+    .checkout-wrap { max-width: 1100px; margin: 0 auto; padding: 48px 20px 80px; }
+
+    .checkout-header { margin-bottom: 40px; }
+    .checkout-header h1 {
+        font-family: 'Playfair Display', serif;
+        font-size: clamp(28px, 4vw, 42px);
+        font-weight: 700;
+        color: var(--ink);
+        margin: 0 0 6px;
+    }
+    .checkout-header p { color: var(--ink-muted); margin: 0; font-size: 15px; }
+
+    /* Step Indicator */
+    .steps {
+        display: flex; align-items: center; gap: 0;
+        margin-bottom: 40px;
+    }
+    .step { display: flex; align-items: center; gap: 10px; }
+    .step-circle {
+        width: 32px; height: 32px; border-radius: 50%;
+        display: flex; align-items: center; justify-content: center;
+        font-size: 13px; font-weight: 600;
+        background: var(--accent); color: #fff;
+        flex-shrink: 0;
+    }
+    .step-circle.done { background: var(--success); }
+    .step-circle.pending { background: #e9e6ff; color: var(--accent); }
+    .step-label { font-size: 13px; font-weight: 500; color: var(--ink); }
+    .step-label.pending { color: var(--ink-muted); }
+    .step-line { flex: 1; height: 2px; background: linear-gradient(90deg, var(--accent) 0%, #e9e6ff 100%); margin: 0 12px; min-width: 24px; }
+
+    /* Cards */
+    .section-card {
+        background: var(--card-bg);
+        border-radius: var(--radius);
+        border: 1px solid var(--border);
+        box-shadow: var(--shadow-sm);
+        padding: 28px 28px;
+        margin-bottom: 20px;
+        transition: box-shadow 0.2s;
+    }
+    .section-card:focus-within { box-shadow: var(--shadow-md); }
+
+    .section-title {
+        font-family: 'Playfair Display', serif;
+        font-size: 17px; font-weight: 600;
+        color: var(--ink); margin: 0 0 22px;
+        display: flex; align-items: center; gap: 10px;
+    }
+    .section-icon {
+        width: 34px; height: 34px; border-radius: 9px;
+        background: var(--accent-glow);
+        display: flex; align-items: center; justify-content: center;
+        color: var(--accent); font-size: 15px; flex-shrink: 0;
+    }
+
+    /* Form */
+    .form-label {
+        font-size: 12px; font-weight: 600; letter-spacing: 0.06em;
+        text-transform: uppercase; color: var(--ink-soft);
+        margin-bottom: 6px; display: block;
+    }
+    .form-control {
+        border: 1.5px solid #e8e5ff;
+        border-radius: var(--radius-sm);
+        padding: 12px 14px;
+        font-size: 15px; color: var(--ink);
+        background: #fdfcff;
+        transition: border-color 0.2s, box-shadow 0.2s;
+        width: 100%;
+    }
+    .form-control:focus {
+        outline: none;
+        border-color: var(--accent);
+        box-shadow: 0 0 0 3px var(--accent-glow);
+        background: #fff;
+    }
+    .field-error { font-size: 12px; color: #e17055; margin-top: 4px; }
+
+    /* Payment Options */
+    .payment-grid { display: flex; flex-direction: column; gap: 10px; }
+    .pay-option {
+        display: flex; align-items: center; gap: 14px;
+        padding: 14px 16px;
+        border: 1.5px solid #e8e5ff;
+        border-radius: var(--radius-sm);
+        cursor: pointer;
+        transition: all 0.18s;
+        background: #fdfcff;
+        position: relative;
+        overflow: hidden;
+    }
+    .pay-option:hover { border-color: var(--accent-light); background: #f9f7ff; }
+    .pay-option.selected {
+        border-color: var(--accent);
+        background: linear-gradient(135deg, #f4f1ff 0%, #fff 100%);
+        box-shadow: 0 0 0 3px var(--accent-glow);
+    }
+    .pay-option input[type="radio"] { position: absolute; opacity: 0; width: 0; height: 0; }
+    .pay-radio {
+        width: 20px; height: 20px; border-radius: 50%;
+        border: 2px solid #ccc; flex-shrink: 0;
+        display: flex; align-items: center; justify-content: center;
+        transition: all 0.18s;
+    }
+    .pay-option.selected .pay-radio { border-color: var(--accent); background: var(--accent); }
+    .pay-option.selected .pay-radio::after {
+        content: ''; width: 8px; height: 8px; border-radius: 50%; background: #fff;
+    }
+    .pay-icon-wrap {
+        width: 44px; height: 30px; border-radius: 7px;
+        display: flex; align-items: center; justify-content: center;
+        font-size: 19px; flex-shrink: 0;
+        background: #f0eeff;
+    }
+    .pay-name { font-weight: 600; font-size: 15px; }
+    .pay-sub { font-size: 12px; color: var(--ink-muted); }
+
+    /* Stripe card field placeholder */
+    .stripe-field {
+        border: 1.5px solid #e8e5ff;
+        border-radius: var(--radius-sm);
+        padding: 13px 14px;
+        background: #fdfcff;
+        min-height: 46px;
+        display: flex; align-items: center; gap: 8px;
+        color: var(--ink-muted);
+        font-size: 14px;
+    }
+
+    /* Order Summary */
+    .summary-card {
+        background: var(--card-bg);
+        border-radius: var(--radius);
+        border: 1px solid var(--border);
+        box-shadow: var(--shadow-sm);
+        padding: 28px;
+        position: sticky; top: 88px;
+    }
+    .summary-title {
+        font-family: 'Playfair Display', serif;
+        font-size: 18px; font-weight: 700;
+        color: var(--ink); margin: 0 0 20px;
+    }
+
+    .order-item {
+        display: flex; align-items: center; gap: 12px;
+        padding: 10px 0;
+        border-bottom: 1px solid #f0eeff;
+    }
+    .order-item:last-child { border-bottom: none; }
+    .item-img {
+        width: 52px; height: 52px; border-radius: 10px;
+        object-fit: cover; flex-shrink: 0;
+        background: #f0eeff;
+    }
+    .item-name { font-weight: 600; font-size: 14px; line-height: 1.3; }
+    .item-qty { font-size: 12px; color: var(--ink-muted); }
+    .item-price { font-weight: 700; font-size: 14px; color: var(--ink); margin-left: auto; white-space: nowrap; }
+
+    .summary-row {
+        display: flex; justify-content: space-between;
+        align-items: center; font-size: 14px;
+    }
+    .summary-row.total { font-size: 18px; font-weight: 700; color: var(--ink); }
+    .summary-row.muted { color: var(--ink-muted); }
+
+    .btn-place {
+        width: 100%; padding: 15px;
+        background: linear-gradient(135deg, var(--accent) 0%, #8c7cf0 100%);
+        color: #fff; border: none;
+        border-radius: 12px;
+        font-size: 16px; font-weight: 600; letter-spacing: 0.01em;
+        cursor: pointer;
+        transition: all 0.2s;
+        display: flex; align-items: center; justify-content: center; gap: 8px;
+        box-shadow: 0 4px 18px rgba(108,92,231,0.35);
+    }
+    .btn-place:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 28px rgba(108,92,231,0.45);
+    }
+    .btn-place:active { transform: translateY(0); }
+
+    .secure-note {
+        text-align: center; font-size: 12px;
+        color: var(--ink-muted); margin-top: 12px;
+        display: flex; align-items: center; justify-content: center; gap: 5px;
+    }
+    .trust-badges {
+        display: flex; gap: 10px; justify-content: center;
+        margin-top: 16px; flex-wrap: wrap;
+    }
+    .badge-chip {
+        font-size: 11px; font-weight: 500;
+        padding: 5px 10px; border-radius: 20px;
+        background: #f0eeff; color: var(--accent);
+        display: flex; align-items: center; gap: 4px;
+    }
+
+    /* Textarea */
+    textarea.form-control { resize: none; }
+
+    /* Grid layout */
+    .checkout-grid {
+        display: grid;
+        grid-template-columns: 1fr 380px;
+        gap: 28px;
+        align-items: start;
+    }
+    @@media (max-width: 900px) {
+        .checkout-grid { grid-template-columns: 1fr; }
+        .summary-card { position: static; }
+    }
+
+    .row-fields { display: grid; gap: 14px; }
+    .cols-2 { grid-template-columns: 1fr 1fr; }
+    .cols-3 { grid-template-columns: 1fr 1fr 1fr; }
+    @@media (max-width: 600px) {
+        .cols-2, .cols-3 { grid-template-columns: 1fr; }
+    }
+
+    /* Stripe section reveal */
+    .stripe-section {
+        margin-top: 16px;
+        padding-top: 16px;
+        border-top: 1px dashed #e8e5ff;
+        animation: fadeDown 0.25s ease;
+    }
+    @@keyframes fadeDown {
+        from { opacity: 0; transform: translateY(-8px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+    .hidden { display: none !important; }
+</style>
+
+<div class="checkout-wrap">
+
+    <!-- Header -->
+    <div class="checkout-header">
+        <h1>Checkout</h1>
+        <p>Review your order and fill in your delivery details.</p>
+    </div>
+
+    <!-- Steps -->
+    <div class="steps">
+        <div class="step">
+            <div class="step-circle done"><i class="bi bi-check2"></i></div>
+            <span class="step-label">Cart</span>
+        </div>
+        <div class="step-line"></div>
+        <div class="step">
+            <div class="step-circle">2</div>
+            <span class="step-label">Checkout</span>
+        </div>
+        <div class="step-line" style="background: #e9e6ff;"></div>
+        <div class="step">
+            <div class="step-circle pending">3</div>
+            <span class="step-label pending">Confirmation</span>
+        </div>
+    </div>
+
+    <form asp-controller="Order" asp-action="Checkout" method="post" id="checkoutForm">
+        @Html.AntiForgeryToken()
+
+        <div class="checkout-grid">
+
+            <!-- LEFT COLUMN -->
+            <div>
+
+                <!-- Delivery -->
+                <div class="section-card">
+                    <div class="section-title">
+                        <div class="section-icon"><i class="bi bi-geo-alt-fill"></i></div>
+                        Delivery Address
+                    </div>
+
+                    <div class="row-fields cols-2" style="margin-bottom:14px;">
+                        <div>
+                            <label asp-for="FullName" class="form-label">Full Name</label>
+                            <input asp-for="FullName" class="form-control" placeholder="Ahmed Mohamed" />
+                            <span asp-validation-for="FullName" class="field-error"></span>
+                        </div>
+                        <div>
+                            <label asp-for="PhoneNumber" class="form-label">Phone Number</label>
+                            <input asp-for="PhoneNumber" class="form-control" placeholder="01xxxxxxxxx" />
+                            <span asp-validation-for="PhoneNumber" class="field-error"></span>
+                        </div>
+                    </div>
+
+                    <div style="margin-bottom:14px;">
+                        <label asp-for="Street" class="form-label">Street Address</label>
+                        <input asp-for="Street" class="form-control" placeholder="123 Tahrir Square, Apt 4" />
+                        <span asp-validation-for="Street" class="field-error"></span>
+                    </div>
+
+                    <div class="row-fields cols-3">
+                        <div>
+                            <label asp-for="City" class="form-label">City</label>
+                            <input asp-for="City" class="form-control" placeholder="Cairo" />
+                            <span asp-validation-for="City" class="field-error"></span>
+                        </div>
+                        <div>
+                            <label asp-for="State" class="form-label">Governorate <span style="font-weight:400;text-transform:none;letter-spacing:0;">(opt.)</span></label>
+                            <input asp-for="State" class="form-control" placeholder="Cairo" />
+                        </div>
+                        <div>
+                            <label asp-for="PostalCode" class="form-label">Postal Code <span style="font-weight:400;text-transform:none;letter-spacing:0;">(opt.)</span></label>
+                            <input asp-for="PostalCode" class="form-control" placeholder="11511" />
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Gift Message -->
+                <div class="section-card">
+                    <div class="section-title">
+                        <div class="section-icon"><i class="bi bi-gift-fill"></i></div>
+                        Gift Message
+                        <span style="font-family:'DM Sans';font-size:12px;font-weight:400;background:#f0eeff;color:var(--accent);padding:3px 10px;border-radius:20px;margin-left:4px;">Optional</span>
+                    </div>
+                    <textarea asp-for="GiftMessage" class="form-control" rows="3"
+                              placeholder="Add a personal message to include with your gift..."></textarea>
+                    <div style="font-size:12px;color:var(--ink-muted);margin-top:6px;">Max 300 characters.</div>
+                </div>
+
+                <!-- Payment -->
+                <div class="section-card">
+                    <div class="section-title">
+                        <div class="section-icon"><i class="bi bi-credit-card-2-front-fill"></i></div>
+                        Payment Method
+                    </div>
+
+                    <div class="payment-grid">
+
+                        <!-- Credit Card with Stripe -->
+                        <label class="pay-option @(Model.PaymentMethod == PaymentMethod.CreditCard ? "selected" : "")" id="lbl-CreditCard">
+                            <input type="radio" asp-for="PaymentMethod" value="@PaymentMethod.CreditCard"
+                                   onchange="selectPayment(this)" />
+                            <div class="pay-radio"></div>
+                            <div class="pay-icon-wrap">
+                                <svg width="26" height="18" viewBox="0 0 26 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <rect width="26" height="18" rx="4" fill="#6c5ce7"/>
+                                    <rect y="5" width="26" height="4" fill="#5a4fcf"/>
+                                    <rect x="3" y="11" width="6" height="3" rx="1" fill="#a29bfe"/>
+                                </svg>
+                            </div>
+                            <div>
+                                <div class="pay-name">Credit / Debit Card</div>
+                                <div class="pay-sub">Visa, Mastercard, Meeza</div>
+                            </div>
+                            <div style="margin-left:auto;display:flex;gap:5px;align-items:center;">
+                                <svg height="14" viewBox="0 0 60 20" fill="none" xmlns="http://www.w3.org/2000/svg"><text x="0" y="16" font-family="Arial" font-size="16" font-weight="bold" fill="#1a1f71">VISA</text></svg>
+                                <svg height="18" viewBox="0 0 38 24" xmlns="http://www.w3.org/2000/svg"><circle cx="15" cy="12" r="10" fill="#EB001B"/><circle cx="23" cy="12" r="10" fill="#F79E1B"/><path d="M19 5.4a10 10 0 0 1 0 13.2A10 10 0 0 1 19 5.4z" fill="#FF5F00"/></svg>
+                            </div>
+                        </label>
+
+                        <!-- Stripe card element (shown only when CreditCard is selected) -->
+                        <div class="stripe-section @(Model.PaymentMethod != PaymentMethod.CreditCard ? "hidden" : "")" id="stripe-fields">
+                            <div style="margin-bottom:12px;">
+                                <label class="form-label">Card Number</label>
+                                <div class="stripe-field" id="card-number-element">
+                                    <i class="bi bi-credit-card" style="color:var(--accent-light);"></i>
+                                    <span>1234 5678 9012 3456</span>
+                                </div>
+                            </div>
+                            <div class="row-fields cols-2">
+                                <div>
+                                    <label class="form-label">Expiry Date</label>
+                                    <div class="stripe-field">MM / YY</div>
+                                </div>
+                                <div>
+                                    <label class="form-label">CVC</label>
+                                    <div class="stripe-field">
+                                        <i class="bi bi-lock" style="color:var(--accent-light);font-size:13px;"></i>
+                                        <span>•••</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div style="font-size:12px;color:var(--ink-muted);margin-top:10px;display:flex;align-items:center;gap:5px;">
+                                <i class="bi bi-shield-lock-fill" style="color:var(--success);"></i>
+                                Secured by Stripe — your card details are encrypted.
+                            </div>
+                        </div>
+
+                        <!-- PayPal -->
+                        <label class="pay-option @(Model.PaymentMethod == PaymentMethod.PayPal ? "selected" : "")" id="lbl-PayPal">
+                            <input type="radio" asp-for="PaymentMethod" value="@PaymentMethod.PayPal"
+                                   onchange="selectPayment(this)" />
+                            <div class="pay-radio"></div>
+                            <div class="pay-icon-wrap">
+                                <svg height="20" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M19.5 7.5C19.5 11.09 16.59 14 13 14H11L10 20H7L9 8h5c2.21 0 4 1.79 4 3.5" fill="#003087"/>
+                                    <path d="M17 5C17 8.59 14.09 11.5 10.5 11.5H8.5L7.5 18H5L7 6h4.5C14.43 6 17 5.5 17 5" fill="#009cde"/>
+                                </svg>
+                            </div>
+                            <div>
+                                <div class="pay-name">PayPal</div>
+                                <div class="pay-sub">Pay securely via PayPal</div>
+                            </div>
+                        </label>
+
+                        <!-- Bank Transfer -->
+                        <label class="pay-option @(Model.PaymentMethod == PaymentMethod.BankTransfer ? "selected" : "")" id="lbl-BankTransfer">
+                            <input type="radio" asp-for="PaymentMethod" value="@PaymentMethod.BankTransfer"
+                                   onchange="selectPayment(this)" />
+                            <div class="pay-radio"></div>
+                            <div class="pay-icon-wrap">
+                                <i class="bi bi-bank2" style="font-size:18px;color:#6c5ce7;"></i>
+                            </div>
+                            <div>
+                                <div class="pay-name">Bank Transfer</div>
+                                <div class="pay-sub">Instapay or direct bank deposit</div>
+                            </div>
+                        </label>
+
+                        <!-- Cash on Delivery -->
+                        <label class="pay-option @(Model.PaymentMethod == PaymentMethod.CashOnDelivery ? "selected" : "")" id="lbl-CashOnDelivery">
+                            <input type="radio" asp-for="PaymentMethod" value="@PaymentMethod.CashOnDelivery"
+                                   onchange="selectPayment(this)" />
+                            <div class="pay-radio"></div>
+                            <div class="pay-icon-wrap">
+                                <i class="bi bi-cash-stack" style="font-size:18px;color:#00b894;"></i>
+                            </div>
+                            <div>
+                                <div class="pay-name">Cash on Delivery</div>
+                                <div class="pay-sub">Pay when your order arrives</div>
+                            </div>
+                        </label>
+
+                    </div>
+                    <span asp-validation-for="PaymentMethod" class="field-error"></span>
+                </div>
+
+            </div>
+
+            <!-- RIGHT COLUMN - Order Summary -->
+            <div>
+                <div class="summary-card">
+                    <div class="summary-title">Order Summary</div>
+
+                    <div style="margin-bottom:16px;">
+                        @foreach (var item in Model.Items)
+                        {
+                            <div class="order-item">
+                                <img class="item-img"
+                                     src="@item.ImageUrl" alt="@item.Name"
+                                     onerror="this.src='/images/default-product.png'" />
+                                <div style="flex:1;min-width:0;">
+                                    <div class="item-name text-truncate">@item.Name</div>
+                                    <div class="item-qty">Qty: @item.Quantity</div>
+                                </div>
+                                <span class="item-price">@item.LineTotal.ToString("N0") EGP</span>
+                            </div>
+                        }
+                    </div>
+
+                    <div style="border-top:1px solid #f0eeff;padding-top:16px;display:flex;flex-direction:column;gap:8px;margin-bottom:16px;">
+                        <div class="summary-row muted">
+                            <span>Subtotal</span>
+                            <span>@Model.Subtotal.ToString("N0") EGP</span>
+                        </div>
+                        <div class="summary-row muted">
+                            <span>Shipping</span>
+                            <span style="color:var(--success);font-weight:600;">@(Model.Shipping == 0 ? "Free 🎉" : $"{Model.Shipping:N0} EGP")</span>
+                        </div>
+                    </div>
+
+                    <div style="border-top:2px solid #f0eeff;padding-top:16px;margin-bottom:24px;">
+                        <div class="summary-row total">
+                            <span>Total</span>
+                            <span>@Model.Total.ToString("N0") EGP</span>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn-place" id="submitBtn">
+                        <i class="bi bi-lock-fill"></i>
+                        Place Order
+                    </button>
+
+                    <div class="secure-note">
+                        <i class="bi bi-shield-check-fill" style="color:var(--success);"></i>
+                        256-bit SSL Encrypted Checkout
+                    </div>
+
+                    <div class="trust-badges">
+                        <div class="badge-chip"><i class="bi bi-arrow-counterclockwise"></i> Easy Returns</div>
+                        <div class="badge-chip"><i class="bi bi-truck"></i> Fast Delivery</div>
+                        <div class="badge-chip"><i class="bi bi-headset"></i> 24/7 Support</div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script>
+        function selectPayment(radio) {
+            // Remove selected from all
+            document.querySelectorAll('.pay-option').forEach(el => el.classList.remove('selected'));
+            // Add to parent label
+            radio.closest('.pay-option').classList.add('selected');
+
+            // Show/hide Stripe fields
+            const stripeSection = document.getElementById('stripe-fields');
+            if (radio.value === '@((int)PaymentMethod.CreditCard)') {
+                stripeSection.classList.remove('hidden');
+            } else {
+                stripeSection.classList.add('hidden');
+            }
+        }
+
+        // On load: sync radio button value to CreditCard int
+        document.addEventListener('DOMContentLoaded', () => {
+            const checked = document.querySelector('.pay-option input[type=radio]:checked');
+            if (checked) {
+                checked.closest('.pay-option').classList.add('selected');
+                if (checked.value === '@((int)PaymentMethod.CreditCard)') {
+                    document.getElementById('stripe-fields').classList.remove('hidden');
+                }
+            }
+        });
+    </script>
+}

@@ -1,0 +1,79 @@
+@using Giftify.Models
+@model IEnumerable<Order>
+
+@{
+    ViewData["Title"] = "My Orders";
+}
+
+<div class="container py-5" style="max-width:860px;">
+    <h2 class="fw-bold mb-4">My Orders</h2>
+
+    @if (!Model.Any())
+    {
+        <div class="text-center py-5 text-muted">
+            <i class="bi bi-bag-x fs-1 d-block mb-3"></i>
+            <p>You haven't placed any orders yet.</p>
+            <a asp-controller="Products" asp-action="Index" class="btn btn-dark rounded-pill px-4">
+                Start Shopping
+            </a>
+        </div>
+    }
+    else
+    {
+        <div class="d-flex flex-column gap-3">
+            @foreach (var order in Model)
+            {
+                var statusColor = order.Status switch
+                {
+                    "Pending"   => "warning",
+                    "Confirmed" => "primary",
+                    "Shipped"   => "info",
+                    "Delivered" => "success",
+                    "Cancelled" => "danger",
+                    _           => "secondary"
+                };
+
+                <div class="card border-0 shadow-sm rounded-4 p-4">
+                    <div class="d-flex justify-content-between align-items-start flex-wrap gap-2 mb-3">
+                        <div>
+                            <span class="text-muted small">Order</span>
+                            <span class="fw-bold ms-1">#@order.Id</span>
+                            <span class="text-muted small ms-3">@order.OrderDate.ToString("dd MMM yyyy")</span>
+                        </div>
+                        <span class="badge rounded-pill bg-@statusColor-subtle text-@statusColor px-3 py-2">
+                            @order.Status
+                        </span>
+                    </div>
+
+                    <div class="d-flex flex-column gap-2 mb-3">
+                        @foreach (var item in order.OrderItems)
+                        {
+                            <div class="d-flex align-items-center gap-3">
+                                <img src="@(item.Product?.Images?.FirstOrDefault(i => i.IsPrimary)?.ImageUrl ?? "/images/default-product.png")"
+                                     alt="@item.Product?.Name"
+                                     style="width:48px;height:48px;object-fit:cover;border-radius:8px;"
+                                     onerror="this.src='/images/default-product.png'" />
+                                <div class="flex-grow-1">
+                                    <p class="mb-0 fw-semibold">@item.Product?.Name</p>
+                                    <p class="mb-0 text-muted small">Qty: @item.Quantity × @item.UnitPrice.ToString("N0") EGP</p>
+                                </div>
+                                <span class="fw-semibold text-nowrap">
+                                    @((item.Quantity * item.UnitPrice).ToString("N0")) EGP
+                                </span>
+                            </div>
+                        }
+                    </div>
+
+                    <hr class="my-2" />
+
+                    <div class="d-flex justify-content-between align-items-center">
+                        <span class="text-muted small">
+                            <i class="bi bi-geo-alt me-1"></i>@order.ShippingAddress
+                        </span>
+                        <span class="fw-bold">Total: @order.TotalAmount.ToString("N0") EGP</span>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+</div>

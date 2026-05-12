@@ -1,0 +1,19 @@
+@* احط الكود ده في @section Scripts في View بتاعة Create Product *@
+
+@section Scripts {
+    @await Html.PartialAsync("_ValidationScriptsPartial")
+
+    <script>
+        // Register custom client-side validator for RequiredList
+        $.validator.addMethod("requiredlist", function (value, element) {
+            // find all checkboxes with same name and check if any is checked
+            var name = element.name;
+            return $('input[name="' + name + '"]:checked').length > 0;
+        });
+
+        $.validator.unobtrusive.adapters.add("requiredlist", function (options) {
+            options.rules["requiredlist"] = true;
+            options.messages["requiredlist"] = options.message;
+        });
+    </script>
+}

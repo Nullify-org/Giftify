@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations;
+using Giftify.Validations;
 
 namespace Giftify.ViewModels.Admin;
 
@@ -24,9 +25,8 @@ public class AdminProductCreateVM
     [Required(ErrorMessage = "Category is required.")]
     public int CategoryId { get; set; }
 
-    // optional primary image upload
     public IFormFile? ImageFile { get; set; }
 
-    // Occasions (optional, multi-select)
+    [RequiredList(ErrorMessage = "At least one occasion is required.")]
     public List<int> SelectedOccasionIds { get; set; } = new();
 }

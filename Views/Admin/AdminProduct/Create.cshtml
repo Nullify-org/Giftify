@@ -49,7 +49,7 @@
                 <div class="col-12">
                     <label class="form-label fw-semibold">
                         <i class="bi bi-balloon-heart me-1"></i>Occasions
-                        <span class="text-muted fw-normal small ms-1">(optional)</span>
+                        <span class="text-danger ms-1">*</span>
                     </label>
                     <div class="d-flex flex-wrap gap-2 p-3 border rounded-3 bg-light" style="min-height:52px;">
                         @if (ViewBag.Occasions != null)
@@ -71,6 +71,7 @@
                             <span class="text-muted small">No occasions available.</span>
                         }
                     </div>
+                    <span asp-validation-for="SelectedOccasionIds" class="text-danger small"></span>
                 </div>
 
                 <div class="col-md-8">
@@ -114,6 +115,15 @@
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
     <script>
+        // Custom validator for RequiredList attribute
+        $.validator.addMethod("requiredlist", function (value, element) {
+            return $('input[name="' + element.name + '"]:checked').length > 0;
+        });
+        $.validator.unobtrusive.adapters.add("requiredlist", function (options) {
+            options.rules["requiredlist"] = true;
+            options.messages["requiredlist"] = options.message;
+        });
+
         function previewImage(input) {
             const preview = document.getElementById('imgPreview');
             if (input.files && input.files[0]) {

@@ -60,6 +60,8 @@ public class AdminProductController : Controller
             Stock = vm.Stock,
             IsActive = vm.IsActive,
             CategoryId = vm.CategoryId,
+            
+
         };
 
         if (imageUrl is not null)

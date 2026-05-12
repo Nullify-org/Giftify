@@ -1,0 +1,86 @@
+@using Giftify.Models
+@model IEnumerable<Order>
+@{
+    ViewData["Title"] = "Orders";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+    var statuses = ViewBag.Statuses as string[] ?? Array.Empty<string>();
+    var currentFilter = ViewBag.StatusFilter as string;
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h5 class="fw-bold mb-0" style="color:#1a1a2e;">Orders</h5>
+        <span class="text-muted" style="font-size:.83rem;">@Model.Count() orders</span>
+    </div>
+</div>
+
+@if (TempData["Success"] is string msg)
+{
+    <div class="alert alert-success alert-dismissible fade show rounded-3 mb-3">
+        <i class="bi bi-check-circle-fill me-2"></i>@msg
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+}
+
+<!-- Status Filter -->
+<div class="d-flex gap-2 flex-wrap mb-4">
+    <a asp-action="Index" class="btn btn-sm @(currentFilter == null ? "btn-dark" : "btn-outline-secondary") rounded-pill">
+        All
+    </a>
+    @foreach (var s in statuses)
+    {
+        <a asp-action="Index" asp-route-status="@s"
+           class="btn btn-sm @(currentFilter == s ? "btn-dark" : "btn-outline-secondary") rounded-pill">
+            @s
+        </a>
+    }
+</div>
+
+<div class="stat-card">
+    <div class="table-responsive">
+        <table class="table table-hover align-middle mb-0" style="font-size:.9rem;">
+            <thead style="background:#f8f9fc;">
+                <tr>
+                    <th class="border-0 text-muted fw-semibold">#</th>
+                    <th class="border-0 text-muted fw-semibold">Customer</th>
+                    <th class="border-0 text-muted fw-semibold">Date</th>
+                    <th class="border-0 text-muted fw-semibold">Amount</th>
+                    <th class="border-0 text-muted fw-semibold">Status</th>
+                    <th class="border-0 text-end"></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var o in Model)
+                {
+                    var badgeClass = o.Status switch {
+                        "Delivered"  => "bg-success-subtle text-success",
+                        "Shipped"    => "bg-primary-subtle text-primary",
+                        "Processing" => "bg-warning-subtle text-warning",
+                        "Cancelled"  => "bg-danger-subtle text-danger",
+                        _            => "bg-secondary-subtle text-secondary"
+                    };
+                    <tr>
+                        <td class="text-muted fw-semibold">#@o.Id</td>
+                        <td>
+                            <div class="fw-semibold">@(o.User?.FullName ?? "—")</div>
+                            <div class="text-muted" style="font-size:.78rem;">@o.User?.Email</div>
+                        </td>
+                        <td class="text-muted">@o.OrderDate.ToString("MMM d, yyyy")</td>
+                        <td class="fw-bold">@o.TotalAmount.ToString("N0") EGP</td>
+                        <td><span class="badge @badgeClass rounded-pill">@o.Status</span></td>
+                        <td class="text-end">
+                            <a asp-action="Details" asp-route-id="@o.Id"
+                               class="btn btn-sm btn-outline-dark rounded-pill">
+                                <i class="bi bi-eye"></i> Details
+                            </a>
+                        </td>
+                    </tr>
+                }
+                @if (!Model.Any())
+                {
+                    <tr><td colspan="6" class="text-center text-muted py-5">No orders found.</td></tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

@@ -1,0 +1,111 @@
+@using Giftify.Models
+@model IEnumerable<Occasion>
+@{
+    ViewData["Title"] = "Occasions";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h5 class="fw-bold mb-0" style="color:#1a1a2e;">Occasions</h5>
+        <span class="text-muted" style="font-size:.83rem;">@Model.Count() total occasions</span>
+    </div>
+    <a asp-action="Create" class="btn btn-dark rounded-pill px-4">
+        <i class="bi bi-plus-lg me-1"></i> New Occasion
+    </a>
+</div>
+
+@if (TempData["Success"] is string msg)
+{
+    <div class="alert alert-success alert-dismissible fade show rounded-3 mb-3">
+        <i class="bi bi-check-circle-fill me-2"></i>@msg
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+}
+
+<div class="stat-card">
+    <div class="table-responsive">
+        <table class="table table-hover align-middle mb-0" style="font-size:.9rem;">
+            <thead style="background:#f8f9fc;">
+                <tr>
+                    <th class="border-0 text-muted fw-semibold">#</th>
+                    <th class="border-0 text-muted fw-semibold">Name</th>
+                    <th class="border-0 text-muted fw-semibold">Description</th>
+                    <th class="border-0 text-muted fw-semibold">Status</th>
+                    <th class="border-0 text-end"></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var o in Model)
+                {
+                    <tr>
+                        <td class="text-muted">@o.Id</td>
+                        <td class="fw-semibold">
+                            <i class="bi bi-calendar-heart text-danger me-2"></i>@o.Name
+                        </td>
+                        <td class="text-muted">@o.Description</td>
+                        <td>
+                            @if (o.IsActive)
+                            {
+                                <span class="badge bg-success-subtle text-success rounded-pill">Active</span>
+                            }
+                            else
+                            {
+                                <span class="badge bg-secondary-subtle text-secondary rounded-pill">Inactive</span>
+                            }
+                        </td>
+                        <td class="text-end">
+                            <a asp-action="Edit" asp-route-id="@o.Id"
+                               class="btn btn-sm btn-outline-dark rounded-pill me-1">
+                                <i class="bi bi-pencil"></i> Edit
+                            </a>
+                            <button type="button" class="btn btn-sm btn-outline-danger rounded-pill"
+                                    data-bs-toggle="modal" data-bs-target="#deleteModal"
+                                    data-id="@o.Id" data-name="@o.Name">
+                                <i class="bi bi-trash"></i>
+                            </button>
+                        </td>
+                    </tr>
+                }
+                @if (!Model.Any())
+                {
+                    <tr><td colspan="5" class="text-center text-muted py-5">No occasions yet.</td></tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- Delete Modal -->
+<div class="modal fade" id="deleteModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content rounded-4 border-0 shadow">
+            <div class="modal-header border-0">
+                <h5 class="modal-title fw-bold">Delete Occasion</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body text-muted">
+                Are you sure you want to delete <strong id="deleteName"></strong>?
+            </div>
+            <div class="modal-footer border-0">
+                <button type="button" class="btn btn-secondary rounded-pill" data-bs-dismiss="modal">Cancel</button>
+                <form id="deleteForm" method="post">
+                    @Html.AntiForgeryToken()
+                    <button type="submit" class="btn btn-danger rounded-pill">
+                        <i class="bi bi-trash me-1"></i> Delete
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        document.getElementById('deleteModal').addEventListener('show.bs.modal', e => {
+            const btn = e.relatedTarget;
+            document.getElementById('deleteName').textContent = btn.dataset.name;
+            document.getElementById('deleteForm').action = `/Admin/Occasions/Delete/${btn.dataset.id}`;
+        });
+    </script>
+}

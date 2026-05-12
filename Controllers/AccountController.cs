@@ -1,4 +1,4 @@
-﻿using Giftify.Models;
+using Giftify.Models;
 using Giftify.ViewModels.Account;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -8,7 +8,6 @@ namespace Giftify.Controllers
 {
     public class AccountController : Controller
     {
-       
         private readonly UserManager<ApplicationUser> userManager;
         private readonly SignInManager<ApplicationUser> signInManager;
 
@@ -18,18 +17,18 @@ namespace Giftify.Controllers
             userManager = _userManager;
             signInManager = _signInManager;
         }
+
         public IActionResult Index()
         {
             return View();
         }
-
 
         [HttpGet]
         public IActionResult Register()
         {
             return View();
         }
-        
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Register(RegisterVM userFromReq)
@@ -53,8 +52,9 @@ namespace Giftify.Controllers
 
             if (result.Succeeded)
             {
+                // Assign default User role on registration
+                await userManager.AddToRoleAsync(user, "User");
                 await signInManager.SignInAsync(user, isPersistent: false);
-
                 return RedirectToAction("Index", "Home");
             }
 
@@ -66,7 +66,6 @@ namespace Giftify.Controllers
             return View(userFromReq);
         }
 
-
         [HttpGet]
         public IActionResult Login() => View();
 
@@ -77,13 +76,25 @@ namespace Giftify.Controllers
             if (!ModelState.IsValid) return View(model);
 
             var result = await signInManager.PasswordSignInAsync(model.UserName, model.Password, model.RememberMe, false);
-            if (result.Succeeded) return RedirectToAction("Index", "Home");
+
+            if (result.Succeeded)
+            {
+                // Check if the logged-in user is Admin → redirect to Admin Dashboard
+                var user = await userManager.FindByNameAsync(model.UserName);
+                if (user != null && await userManager.IsInRoleAsync(user, "Admin"))
+                {
+                    return RedirectToAction("Index", "AdminDashboard");
+                }
+
+                return RedirectToAction("Index", "Home");
+            }
 
             ModelState.AddModelError(string.Empty, "Invalid login attempt.");
             return View(model);
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public IActionResult ExternalLogin(string provider, string returnUrl = null)
         {
             var redirectUrl = Url.Action("ExternalLoginCallback", "Account", new { returnUrl });
@@ -99,13 +110,13 @@ namespace Giftify.Controllers
             var result = await signInManager.ExternalLoginSignInAsync(info.LoginProvider, info.ProviderKey, isPersistent: false);
             if (result.Succeeded) return RedirectToAction("Index", "Home");
 
-            // If user doesn't exist, create one using external claims
             var email = info.Principal.FindFirstValue(ClaimTypes.Email);
             var user = new ApplicationUser { UserName = email, Email = email, FullName = info.Principal.FindFirstValue(ClaimTypes.Name) };
 
             var createResult = await userManager.CreateAsync(user);
             if (createResult.Succeeded)
             {
+                await userManager.AddToRoleAsync(user, "User");
                 await userManager.AddLoginAsync(user, info);
                 await signInManager.SignInAsync(user, isPersistent: false);
                 return RedirectToAction("Index", "Home");
@@ -114,18 +125,11 @@ namespace Giftify.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Logout()
         {
             await signInManager.SignOutAsync();
             return RedirectToAction("Index", "Home");
         }
-
-
-
-
-
-
-
-
     }
 }

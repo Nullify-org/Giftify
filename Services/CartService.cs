@@ -44,7 +44,7 @@ public class CartService : ICartService
         {
             cart = new Cart { ApplicationUserId = userId };
             await _unitOfWork.Carts.AddAsync(cart);
-            await _unitOfWork.Save(); // need Cart.Id before inserting items
+            await _unitOfWork.CompleteAsync(); // need Cart.Id before inserting items
 
             // Reload so CartItems collection is initialised
             cart = await _unitOfWork.Carts.GetCartWithItemsAsync(userId);
@@ -92,7 +92,7 @@ public class CartService : ICartService
             await _unitOfWork.Carts.AddCartItemAsync(newItem);
         }
 
-        await _unitOfWork.Save();
+        await _unitOfWork.CompleteAsync();
     }
 
     public async Task UpdateItemQuantityAsync(string userId, UpdateCartItemVM request)
@@ -120,7 +120,7 @@ public class CartService : ICartService
                 $"Only {product.Stock} unit(s) of \"{product.Name}\" available.");
 
         item.Quantity = request.NewQuantity;
-        await _unitOfWork.Save();
+        await _unitOfWork.CompleteAsync();
     }
 
     public async Task RemoveItemAsync(string userId, int cartItemId)
@@ -133,7 +133,7 @@ public class CartService : ICartService
             ?? throw new KeyNotFoundException($"Cart item {cartItemId} not found.");
 
         _unitOfWork.Carts.RemoveCartItem(item);
-        await _unitOfWork.Save();
+        await _unitOfWork.CompleteAsync();
     }
 
     public async Task ClearCartAsync(string userId)
@@ -142,7 +142,7 @@ public class CartService : ICartService
         if (cart == null) return;
 
         await _unitOfWork.Carts.ClearCartItemsAsync(cart.Id);
-        await _unitOfWork.Save();
+        await _unitOfWork.CompleteAsync();
     }
 
     // ─── Private helpers ─────────────────────────────────────────────────────

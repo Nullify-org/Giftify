@@ -49,7 +49,7 @@ namespace Giftify.Services
                 Name = categoryCreateVM.Name
             };
             await _unitOfWork.Categories.AddAsync(category);
-            await _unitOfWork.Save();
+            await _unitOfWork.CompleteAsync();
         }
 
         public async Task UpdateCategoryAsync(int categoryId, CategoryEditVM categoryEditVM)
@@ -59,7 +59,7 @@ namespace Giftify.Services
                 throw new Exception("Category not found");
             category.Name = categoryEditVM.Name;
             _unitOfWork.Categories.Update(category);
-            await _unitOfWork.Save();
+            await _unitOfWork.CompleteAsync();
         }
     }
 }

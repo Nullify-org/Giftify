@@ -1,0 +1,26 @@
+﻿using Giftify.Models;
+using Giftify.ViewModels.Categories;
+using Giftify.ViewModels.Occasions;
+using System.ComponentModel.DataAnnotations;
+
+namespace Giftify.ViewModels.Products;
+
+public class CreateProductVM
+{
+    [Required(ErrorMessage = "Product name is required")]
+    public string Name { get; set; }
+    public string? Description { get; set; }
+
+    [Range(1, 100000)]
+    public decimal Price { get; set; }
+
+    [Range(0, 1000)]
+    public int Stock { get; set; }
+
+    [Display(Name = "Category"), Required(ErrorMessage = "Please select a category")]
+    public int CategoryId { get; set; }
+    public ICollection<IFormFile> Images { get; set; } = new List<IFormFile>();
+    public List<int> SelectedOccasionIds { get; set; } = new List<int>();
+    public ICollection<CategoryVM>? Categories { get; set; }
+    public ICollection<OccasionVM>? Occasions { get; set; }
+}

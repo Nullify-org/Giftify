@@ -14,9 +14,12 @@ public class UnitOfWork : IUnitOfWork
     public IOccasionRepository Occasions { get; private set; }
     public ICategoryRepository Categories { get; private set; }
 
+    public IProductImageRepository ProductImages { get; private set; }
+
     public UnitOfWork(ApplicationDbContext context, ICartRepository cartRepo,
                         IOrderRepository orderRepo, IProductRepository productRepo,
-                        ICategoryRepository categoryRepo, IOccasionRepository occasions)
+                        ICategoryRepository categoryRepo, IOccasionRepository occasionsRepo,
+                        IProductImageRepository productImageRepo)
 
     {
         this._context = context;
@@ -24,7 +27,8 @@ public class UnitOfWork : IUnitOfWork
         Orders = orderRepo;
         Products = productRepo;
         Categories = categoryRepo;
-        Occasions = occasions;
+        Occasions = occasionsRepo;
+        ProductImages = productImageRepo;
     }
 
     public void Dispose()
@@ -32,7 +36,7 @@ public class UnitOfWork : IUnitOfWork
         _context?.Dispose();
     }
 
-    public async Task<int> Save()
+    public async Task<int> CompleteAsync()
     {
         return await _context.SaveChangesAsync();
     }

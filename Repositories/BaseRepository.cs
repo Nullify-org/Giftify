@@ -34,9 +34,15 @@ public class BaseRepository<T> : IBaseRepository<T> where T : class
         return await query.FirstOrDefaultAsync();
     }
 
-    public async Task<T?> FindAsync(Expression<Func<T, bool>> criteria, string[] includes)
+    public async Task<T?> FindAsync(Expression<Func<T, bool>> criteria, string[] includes, bool tracked = false)
     {
-        IQueryable<T> query = _context.Set<T>().Where(criteria).AsNoTracking();
+        IQueryable<T> query = _context.Set<T>().Where(criteria);
+
+        if (!tracked)
+            query = query.AsNoTracking();
+
+        else
+            query = query.AsTracking();
 
         if (includes != null)
         {

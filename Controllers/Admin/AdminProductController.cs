@@ -75,7 +75,7 @@ public class AdminProductController : Controller
         }
 
         await _unitOfWork.Products.AddAsync(product);
-        await _unitOfWork.Save();
+        await _unitOfWork.CompleteAsync();
 
         // Link selected occasions
         if (vm.SelectedOccasionIds?.Any() == true)
@@ -86,7 +86,7 @@ public class AdminProductController : Controller
                 if (occ is not null)
                     occ.OccasionProducts.Add(new OccasionProduct { ProductId = product.Id, OccasionId = occId });
             }
-            await _unitOfWork.Save();
+            await _unitOfWork.CompleteAsync();
         }
 
         TempData["Success"] = $"Product '{product.Name}' created successfully.";
@@ -179,7 +179,7 @@ public class AdminProductController : Controller
         }
 
         _unitOfWork.Products.Update(product);
-        await _unitOfWork.Save();
+        await _unitOfWork.CompleteAsync();
 
         TempData["Success"] = $"Product '{product.Name}' updated successfully.";
         return RedirectToAction(nameof(Index));
@@ -199,7 +199,7 @@ public class AdminProductController : Controller
             _imageUpload.Delete(img.ImageUrl);
 
         _unitOfWork.Products.Delete(product);
-        await _unitOfWork.Save();
+        await _unitOfWork.CompleteAsync();
 
         TempData["Success"] = $"Product '{product.Name}' deleted.";
         return RedirectToAction(nameof(Index));

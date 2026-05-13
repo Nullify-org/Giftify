@@ -58,6 +58,7 @@ namespace Giftify
 
             // ── Repositories ──────────────────────────────────────────────────
             builder.Services.AddScoped<IUnitOfWork,          UnitOfWork>();
+            builder.Services.AddScoped<IProductImageRepository, ProductImageRepository>();
             builder.Services.AddScoped<IProductRepository,   ProductRepository>();
             builder.Services.AddScoped<IOrderRepository,     OrderRepository>();
             builder.Services.AddScoped<ICartRepository,      CartRepository>();

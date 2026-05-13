@@ -35,7 +35,7 @@ public class AdminOccasionController : Controller
             return View(string.Format(VP, "Create"), model);
 
         await _unitOfWork.Occasions.AddAsync(model);
-        await _unitOfWork.Save();
+        await _unitOfWork.CompleteAsync();
         TempData["Success"] = $"Occasion '{model.Name}' created.";
         return RedirectToAction(nameof(Index));
     }
@@ -56,7 +56,7 @@ public class AdminOccasionController : Controller
             return View(string.Format(VP, "Edit"), model);
 
         _unitOfWork.Occasions.Update(model);
-        await _unitOfWork.Save();
+        await _unitOfWork.CompleteAsync();
         TempData["Success"] = $"Occasion '{model.Name}' updated.";
         return RedirectToAction(nameof(Index));
     }
@@ -67,7 +67,7 @@ public class AdminOccasionController : Controller
         var occ = await _unitOfWork.Occasions.GetByIdAsync(id);
         if (occ is null) return NotFound();
         _unitOfWork.Occasions.Delete(occ);
-        await _unitOfWork.Save();
+        await _unitOfWork.CompleteAsync();
         TempData["Success"] = $"Occasion '{occ.Name}' deleted.";
         return RedirectToAction(nameof(Index));
     }

@@ -76,7 +76,7 @@ public class OrderService : IOrderService
         await _unitOfWork.Carts.ClearCartItemsAsync(cart.Id);
 
         // 5. Commit everything in one transaction
-        await _unitOfWork.Save();
+        await _unitOfWork.CompleteAsync();
 
         return order;
     }
@@ -93,6 +93,6 @@ public class OrderService : IOrderService
     public async Task UpdateOrderStatusAsync(int orderId, string newStatus)
     {
         await _unitOfWork.Orders.UpdateOrderStatusAsync(orderId, newStatus);
-        await _unitOfWork.Save();
+        await _unitOfWork.CompleteAsync();
     }
 }

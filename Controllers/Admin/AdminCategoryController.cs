@@ -35,7 +35,7 @@ public class AdminCategoryController : Controller
             return View(string.Format(VP, "Create"), model);
 
         await _unitOfWork.Categories.AddAsync(model);
-        await _unitOfWork.Save();
+        await _unitOfWork.CompleteAsync();
         TempData["Success"] = $"Category '{model.Name}' created.";
         return RedirectToAction(nameof(Index));
     }
@@ -56,7 +56,7 @@ public class AdminCategoryController : Controller
             return View(string.Format(VP, "Edit"), model);
 
         _unitOfWork.Categories.Update(model);
-        await _unitOfWork.Save();
+        await _unitOfWork.CompleteAsync();
         TempData["Success"] = $"Category '{model.Name}' updated.";
         return RedirectToAction(nameof(Index));
     }
@@ -67,7 +67,7 @@ public class AdminCategoryController : Controller
         var cat = await _unitOfWork.Categories.GetByIdAsync(id);
         if (cat is null) return NotFound();
         _unitOfWork.Categories.Delete(cat);
-        await _unitOfWork.Save();
+        await _unitOfWork.CompleteAsync();
         TempData["Success"] = $"Category '{cat.Name}' deleted.";
         return RedirectToAction(nameof(Index));
     }

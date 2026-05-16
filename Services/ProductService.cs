@@ -130,6 +130,12 @@ public class ProductService : IProductService
     }
     public async Task CreateProductAsync(CreateProductVM model)
     {
+        if (model.SelectedOccasionIds == null || !model.SelectedOccasionIds.Any())
+            throw new ArgumentException("Product must have at least one occasion.");
+
+        if (model.Images == null || !model.Images.Any())
+            throw new ArgumentException("Product must have at least one image.");
+
         var product = new Product
         {
             Name = model.Name,
@@ -153,8 +159,6 @@ public class ProductService : IProductService
     public async Task<EditProductVM> GetProductForEditAsync(int productId)
     {
         var product = await _unitOfWork.Products.FindAsync(p => p.Id == productId, p => p.Images, p => p.OccasionProducts);
-        var categories = await _unitOfWork.Categories.GetAllAsync();
-
         var lookups = await GetCreateProductVMAsync();
 
         return new EditProductVM
@@ -174,6 +178,9 @@ public class ProductService : IProductService
 
     public async Task UpdateProductAsync(EditProductVM model)
     {
+        if (model.SelectedOccasionIds == null || !model.SelectedOccasionIds.Any())
+            throw new ArgumentException("Product must have at least one occasion.");
+
         var product = await _unitOfWork.Products
                         .FindAsync(p => p.Id == model.Id, new[] { "Images", "OccasionProducts" }, true);
 
@@ -212,6 +219,10 @@ public class ProductService : IProductService
                 });
             }
         }
+
+        if (!product.Images.Any())
+            throw new InvalidOperationException("A product must have at least one image.");
+
         await _unitOfWork.CompleteAsync();
     }
 
@@ -235,7 +246,7 @@ public class ProductService : IProductService
 
     public async Task DeleteProductAsync(int productId)
     {
-        var product = await _unitOfWork.Products.FindAsync(p => p.Id == productId, p => p.Images);
+        var product = await _unitOfWork.Products.FindAsync(p => p.Id == productId, p => p.Images, p => p.OccasionProducts);
 
         if (product == null)
             return;

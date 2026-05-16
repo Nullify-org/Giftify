@@ -20,6 +20,9 @@ public class CreateProductVM
     [Display(Name = "Category"), Required(ErrorMessage = "Please select a category")]
     public int CategoryId { get; set; }
     public ICollection<IFormFile> Images { get; set; } = new List<IFormFile>();
+
+    [Required(ErrorMessage = "You must select at least one occasion for the product.")]
+    [MinLength(1, ErrorMessage = "You must select at least one occasion for the product.")]
     public List<int> SelectedOccasionIds { get; set; } = new List<int>();
     public ICollection<CategoryVM>? Categories { get; set; }
     public ICollection<OccasionVM>? Occasions { get; set; }

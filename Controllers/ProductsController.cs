@@ -38,41 +38,60 @@ public class ProductsController : Controller
     [HttpPost, ValidateAntiForgeryToken]
     public async Task<IActionResult> Create(CreateProductVM model)
     {
-        if (ModelState.IsValid)
+        if (!ModelState.IsValid)
+        {
+            var lookups = await _productService.GetCreateProductVMAsync();
+            model.Categories = lookups.Categories;
+            model.Occasions = lookups.Occasions;
+            return View(model);
+        }
+
+        try
         {
             await _productService.CreateProductAsync(model);
-
             return RedirectToAction("Index");
         }
-        var refreshModel = await _productService.GetCreateProductVMAsync();
-
-        model.Categories = refreshModel.Categories;
-        model.Occasions = refreshModel.Occasions;
-
-        return View(model);
+        catch (Exception ex)
+        {
+            ModelState.AddModelError(string.Empty, ex.Message);
+            var lookups = await _productService.GetCreateProductVMAsync();
+            model.Categories = lookups.Categories;
+            model.Occasions = lookups.Occasions;
+            return View(model);
+        }
     }
 
     [HttpGet]
     public async Task<IActionResult> Edit(int id)
     {
-        CreateProductVM model = await _productService.GetProductForEditAsync(id);
+        EditProductVM model = await _productService.GetProductForEditAsync(id);
         return View(model);
     }
 
     [HttpPost, ValidateAntiForgeryToken]
     public async Task<IActionResult> Edit(EditProductVM model)
     {
-        if (ModelState.IsValid)
+        if (!ModelState.IsValid)
+        {
+            await PopulateLookupsAsync(model);
+            return View(model);
+        }
+        try
         {
             await _productService.UpdateProductAsync(model);
             return RedirectToAction("Index");
         }
+        catch (InvalidOperationException ex)
+        {
+            ModelState.AddModelError(string.Empty, ex.Message);
 
-        model = await _productService.GetProductForEditAsync(model.Id);
+            await PopulateLookupsAsync(model);
 
-        return View(model);
+            return View(model);
+        }
     }
 
+    [HttpPost("Products/DeleteImage/{imageId}"), ValidateAntiForgeryToken]
     public async Task<IActionResult> DeleteImage(int imageId)
     {
         try
@@ -87,10 +106,18 @@ public class ProductsController : Controller
         }
     }
 
-    [HttpPost, ValidateAntiForgeryToken]
+    //[HttpPost, ValidateAntiForgeryToken]
     public async Task<IActionResult> Delete(int id)
     {
         await _productService.DeleteProductAsync(id);
         return RedirectToAction("Index");
+    }
+
+    private async Task PopulateLookupsAsync(EditProductVM model)
+    {
+        var lookups = await _productService.GetProductForEditAsync(model.Id);
+        model.Categories = lookups.Categories;
+        model.Occasions = lookups.Occasions;
+        model.ExistingImages = lookups.ExistingImages;
     }
 }

@@ -9,5 +9,6 @@ public class ProductIndexVM
     public IEnumerable<CategoryVM> Categories { get; set; } = new List<CategoryVM>();
     public IEnumerable<OccasionVM> Occasions { get; set; } = new List<OccasionVM>();
     public ProductFilterVM CurrentFilters { get; set; } = new ProductFilterVM();
-
+    public int CurrentPage { get; set; }
+    public int TotalPages { get; set; } 
 }

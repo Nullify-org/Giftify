@@ -10,14 +10,11 @@ namespace Giftify.Controllers;
 public class ProductsController : Controller
 {
     private readonly IProductService _productService;
-    private readonly ICategoryService _categoryService;
-    private readonly IOccasionService _occasionService;
 
-    public ProductsController(IProductService productService, ICategoryService categoryService, IOccasionService occasionService)
+
+    public ProductsController(IProductService productService)
     {
         this._productService = productService;
-        this._categoryService = categoryService;
-        this._occasionService = occasionService;
     }
     public async Task<IActionResult> Index(ProductFilterVM filter)
     {

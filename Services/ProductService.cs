@@ -89,13 +89,16 @@ public class ProductService : IProductService
 
     public async Task<ProductIndexVM> GetFilteredProductsAsync(ProductFilterVM model)
     {
-        var products = await _unitOfWork.Products.SearchAsync(model);
+        model.PageIndex = model.PageIndex > 0 ? model.PageIndex : 1;
+        model.PageSize = model.PageSize > 0 ? model.PageSize : 12;
+
+        var (Products, TotalCount) = await _unitOfWork.Products.SearchAsync(model);
         var categories = await _unitOfWork.Categories.GetAllAsync();
         var occasions = await _unitOfWork.Occasions.GetAllAsync();
 
         var result = new ProductIndexVM
         {
-            Products = products.Select(p => new ProductListItemVM
+            Products = Products.Select(p => new ProductListItemVM
             {
                 Id = p.Id,
                 Name = p.Name,
@@ -105,7 +108,10 @@ public class ProductService : IProductService
             }),
             Categories = categories.Select(c => new CategoryVM { Id = c.Id, Name = c.Name }).ToList(),
             Occasions = occasions.Select(o => new OccasionVM { Id = o.Id, Name = o.Name }).ToList(),
-            CurrentFilters = model
+            CurrentFilters = model,
+
+            CurrentPage = model.PageIndex,
+            TotalPages = (int)Math.Ceiling(TotalCount / (double)model.PageSize)
         };
         return result;
     }

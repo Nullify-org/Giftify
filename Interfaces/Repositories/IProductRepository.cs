@@ -5,5 +5,5 @@ namespace Giftify.Interfaces.Repositories;
 
 public interface IProductRepository : IBaseRepository<Product>
 {
-    Task <IEnumerable<Product>> SearchAsync(ProductFilterVM model);
+    Task <(IEnumerable<Product> Products, int TotalCount)> SearchAsync(ProductFilterVM model);
 }

@@ -159,6 +159,56 @@
                     }
                 </div>
             }
+
+            @if (Model.TotalPages > 1)
+            {
+                <div class="mt-4">
+                    <nav aria-label="Product Page Navigation">
+                        <ul class="pagination justify-content-center align-items-center gap-1">
+
+                            <li class="page-item @(Model.CurrentPage == 1 ? "disabled" : "")">
+                                <a class="page-link rounded-circle"
+                                   asp-action="Index"
+                                   asp-route-PageIndex="@(Model.CurrentPage - 1)"
+                                   asp-route-SearchTerm="@Model.CurrentFilters?.SearchTerm"
+                                   asp-route-CategoryId="@Model.CurrentFilters?.CategoryId"
+                                   asp-route-MinPrice="@Model.CurrentFilters?.MinPrice"
+                                   asp-route-MaxPrice="@Model.CurrentFilters?.MaxPrice">
+                                    &laquo;
+                                </a>
+                            </li>
+
+                            @for (int i = 1; i <= Model.TotalPages; i++)
+                            {
+                                <li class="page-item @(i == Model.CurrentPage ? "active" : "")">
+                                    <a class="page-link rounded-circle fw-bold"
+                                       asp-action="Index"
+                                       asp-route-PageIndex="@i"
+                                       asp-route-SearchTerm="@Model.CurrentFilters?.SearchTerm"
+                                       asp-route-CategoryId="@Model.CurrentFilters?.CategoryId"
+                                       asp-route-MinPrice="@Model.CurrentFilters?.MinPrice"
+                                       asp-route-MaxPrice="@Model.CurrentFilters?.MaxPrice">
+                                        @i
+                                    </a>
+                                </li>
+                            }
+
+                            <li class="page-item @(Model.CurrentPage == Model.TotalPages ? "disabled" : "")">
+                                <a class="page-link rounded-circle"
+                                   asp-action="Index"
+                                   asp-route-PageIndex="@(Model.CurrentPage + 1)"
+                                   asp-route-SearchTerm="@Model.CurrentFilters?.SearchTerm"
+                                   asp-route-CategoryId="@Model.CurrentFilters?.CategoryId"
+                                   asp-route-MinPrice="@Model.CurrentFilters?.MinPrice"
+                                   asp-route-MaxPrice="@Model.CurrentFilters?.MaxPrice">
+                                    &raquo;
+                                </a>
+                            </li>
+
+                        </ul>
+                    </nav>
+                </div>
+            }
         </main>
     </div>
 </div>

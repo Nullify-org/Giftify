@@ -9,4 +9,6 @@ public class ProductFilterVM
     public int? OccasionId { get; set; }
     public decimal? MinPrice { get; set; }
     public decimal? MaxPrice { get; set; }
+    public int PageIndex { get; set; } = 1;
+    public int PageSize { get; set; } = 12;
 }
